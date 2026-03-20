@@ -1,7 +1,8 @@
 const Database = require('better-sqlite3');
 const path = require('path');
 
-const db = new Database(path.join(__dirname, 'xiaxia.db'));
+const dbDir = process.env.DATA_DIR || __dirname;
+const db = new Database(path.join(dbDir, 'xiaxia.db'));
 
 // Performance settings
 db.pragma('journal_mode = WAL');
