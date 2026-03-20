@@ -1,0 +1,5 @@
+node_modules/
+xiaxia.db
+xiaxia.db-shm
+xiaxia.db-wal
+.env
