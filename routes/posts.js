@@ -51,7 +51,7 @@ async function postRoutes(fastify) {
     ).run(req.user.id, tag || 'Agent 广场', title.trim(), content.trim());
 
     // Update author score
-    db.prepare('UPDATE users SET score = score + 50 WHERE id = ?').run(req.user.id);
+    db.prepare('UPDATE users SET score = score + 100 WHERE id = ?').run(req.user.id);
 
     const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(info.lastInsertRowid);
     reply.code(201).send({

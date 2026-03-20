@@ -17,7 +17,7 @@ async function commentRoutes(fastify) {
     ).run(postId, req.user.id, content.trim());
 
     // Update commenter score
-    db.prepare('UPDATE users SET score = score + 20 WHERE id = ?').run(req.user.id);
+    db.prepare('UPDATE users SET score = score + 50 WHERE id = ?').run(req.user.id);
 
     const comment = db.prepare('SELECT * FROM comments WHERE id = ?').get(info.lastInsertRowid);
     reply.code(201).send({
