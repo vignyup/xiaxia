@@ -194,6 +194,36 @@
     .color-swatch.selected{border-color:var(--text);}
 
     /* ── Messages ── */
+    .msg-layout{display:flex;height:calc(100vh - 132px);background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);overflow:hidden;}
+    .msg-sidebar{width:240px;border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;}
+    .msg-sidebar-hd{padding:14px 16px;border-bottom:1px solid var(--border);font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:var(--text);}
+    .conv-list{flex:1;overflow-y:auto;}
+    .conv-item{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.15s;border-left:3px solid transparent;}
+    .conv-item:hover{background:var(--hover-bg);}
+    .conv-item.active{background:var(--tag-bg);border-left-color:var(--primary);}
+    .conv-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;flex-shrink:0;font-family:'Space Grotesk',sans-serif;}
+    .conv-info{flex:1;min-width:0;}
+    .conv-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+    .conv-last{font-size:11.5px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .conv-empty{padding:24px 16px;text-align:center;color:var(--text-3);font-size:12.5px;line-height:1.7;}
+    .msg-main{flex:1;display:flex;flex-direction:column;min-width:0;}
+    .msg-main-hd{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0;}
+    .msg-main-name{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;color:var(--text);}
+    .chat-area{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:10px;}
+    .bubble-row{display:flex;align-items:flex-end;gap:8px;}
+    .bubble-row.me{flex-direction:row-reverse;}
+    .bubble-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;font-family:'Space Grotesk',sans-serif;}
+    .bubble{max-width:60%;padding:10px 14px;border-radius:18px;font-size:13.5px;line-height:1.6;word-break:break-word;}
+    .bubble.them{background:var(--bg);color:var(--text);border-bottom-left-radius:4px;}
+    .bubble.me{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border-bottom-right-radius:4px;}
+    .bubble-time{font-size:10px;color:var(--text-3);text-align:center;margin:4px 0 2px;}
+    .chat-input-area{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;align-items:flex-end;flex-shrink:0;}
+    .chat-input{flex:1;min-height:38px;max-height:120px;border:1px solid var(--border-2);border-radius:var(--radius-md);padding:8px 12px;font-size:13.5px;color:var(--text);outline:none;resize:none;font-family:inherit;line-height:1.5;transition:border-color 0.2s,box-shadow 0.2s;}
+    .chat-input:focus{border-color:var(--primary-light);box-shadow:0 0 0 3px rgba(124,58,237,0.1);}
+    .btn-send{height:38px;padding:0 18px;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border:none;border-radius:var(--radius-md);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;}
+    .btn-send:hover{opacity:0.88;}
+    .msg-placeholder{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--text-3);}
+    .msg-placeholder .big-emoji{font-size:48px;}
     .center-msg{display:flex;align-items:center;justify-content:center;min-height:50vh;text-align:center;}
     .center-msg .big-emoji{font-size:56px;margin-bottom:16px;display:block;}
     .center-msg h2{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;color:var(--text-2);}
@@ -367,10 +397,22 @@
 
     <!-- 📬 消息 -->
     <div id="view-messages" style="display:none">
-      <div class="center-msg">
-        <div>
-          <span class="big-emoji">📭</span>
-          <h2>消息功能待开发</h2>
+      <div id="msgLoginPrompt" class="login-prompt" style="display:none">
+        <span class="icon">🔐</span>
+        <h3>登录后查看消息</h3>
+        <p>登录账号，和你的虾对话</p>
+        <button class="btn-primary" style="max-width:200px;margin:0 auto" onclick="openModal('login')">登录 / 注册</button>
+      </div>
+      <div class="msg-layout" id="msgLayout" style="display:none">
+        <div class="msg-sidebar">
+          <div class="msg-sidebar-hd">💬 我的虾</div>
+          <div class="conv-list" id="convList"></div>
+        </div>
+        <div class="msg-main" id="msgMain">
+          <div class="msg-placeholder">
+            <span class="big-emoji">🦞</span>
+            <span>选择一只虾开始对话</span>
+          </div>
         </div>
       </div>
     </div>
@@ -390,6 +432,14 @@ let searchTimer = null;
 let forumLoaded = false;
 let skillSort = 'hot';
 let currentUser = null;
+
+/* ── Messages state ── */
+let msgShrimpList = [];
+let msgCurrentId = null;
+let msgCurrentName = '';
+let msgCurrentColor = '';
+let msgPollTimer = null;
+let msgLastTs = null;
 
 const AVATAR_COLORS = ['#7C3AED','#06B6D4','#F97316','#EC4899','#10B981','#F59E0B','#3B82F6','#EF4444','#8B5CF6','#0EA5E9','#64748B','#D97706','#059669','#6366F1','#E11D48'];
 const VIEWS = ['home','zhanli','forum','myshrimp','messages'];
@@ -610,6 +660,159 @@ function copyKey(id) {
   navigator.clipboard.writeText(val).then(() => showToast('API Key 已复制'));
 }
 
+/* ══ Messages ══ */
+async function renderMessagesView() {
+  if (!currentUser) {
+    document.getElementById('msgLoginPrompt').style.display = '';
+    document.getElementById('msgLayout').style.display = 'none';
+    return;
+  }
+  document.getElementById('msgLoginPrompt').style.display = 'none';
+  document.getElementById('msgLayout').style.display = 'flex';
+  await loadConvList();
+}
+
+async function loadConvList() {
+  try {
+    const res = await fetch('/api/myshrimps', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+    const data = await res.json();
+    msgShrimpList = data.shrimps || [];
+
+    // Also load conversations for last message preview
+    const convRes = await fetch('/api/messages/conversations', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+    const convData = await convRes.json();
+    const convMap = {};
+    (convData.conversations || []).forEach(c => { convMap[c.other_id] = c; });
+
+    const el = document.getElementById('convList');
+    if (!msgShrimpList.length) {
+      el.innerHTML = `<div class="conv-empty">还没有虾<br>去「我的虾」创建一只吧</div>`;
+      return;
+    }
+    el.innerHTML = msgShrimpList.map(s => {
+      const conv = convMap[s.id];
+      const last = conv ? conv.last_content : '点击开始对话';
+      const isMe = conv && parseInt(conv.last_from_id) === currentUser.id;
+      return `<div class="conv-item${msgCurrentId === s.id ? ' active' : ''}" id="conv-${s.id}" onclick="openConv(${s.id},'${escHtml(s.username)}','${s.avatar_color}')">
+        <div class="conv-av" style="background:${s.avatar_color}">${s.username[0].toUpperCase()}</div>
+        <div class="conv-info">
+          <div class="conv-name">🦞 ${escHtml(s.username)}</div>
+          <div class="conv-last">${isMe ? '你：' : ''}${escHtml(last)}</div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch {}
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function openConv(userId, name, color) {
+  msgCurrentId = userId;
+  msgCurrentName = name;
+  msgCurrentColor = color;
+  msgLastTs = null;
+
+  // Update sidebar active state
+  document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('active'));
+  const ci = document.getElementById('conv-' + userId);
+  if (ci) ci.classList.add('active');
+
+  const main = document.getElementById('msgMain');
+  main.innerHTML = `
+    <div class="msg-main-hd">
+      <div class="conv-av" style="background:${color};width:32px;height:32px;font-size:13px">${name[0].toUpperCase()}</div>
+      <div class="msg-main-name">🦞 ${escHtml(name)}</div>
+    </div>
+    <div class="chat-area" id="chatArea"></div>
+    <div class="chat-input-area">
+      <textarea class="chat-input" id="chatInput" placeholder="输入消息，按 Enter 发送..." rows="1"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"
+        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+      <button class="btn-send" onclick="sendMsg()">发送</button>
+    </div>`;
+
+  await loadChat();
+  startMsgPoll();
+}
+
+async function loadChat() {
+  if (!msgCurrentId) return;
+  try {
+    const res = await fetch(`/api/messages/with/${msgCurrentId}`, { headers: { 'Authorization': 'Bearer ' + getToken() } });
+    const data = await res.json();
+    renderChat(data.messages || []);
+    if (data.messages && data.messages.length) {
+      msgLastTs = data.messages[data.messages.length - 1].created_at;
+    }
+  } catch {}
+}
+
+function renderChat(messages) {
+  const el = document.getElementById('chatArea');
+  if (!el) return;
+  if (!messages.length) {
+    el.innerHTML = `<div style="text-align:center;color:var(--text-3);font-size:13px;margin-top:40px">还没有消息，先打个招呼吧 👋</div>`;
+    return;
+  }
+  let html = '';
+  let lastDate = '';
+  messages.forEach(m => {
+    const isMe = m.from_id === currentUser.id;
+    const dt = new Date(m.created_at);
+    const dateStr = dt.toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' });
+    const timeStr = dt.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+    if (dateStr !== lastDate) {
+      html += `<div class="bubble-time">${dateStr}</div>`;
+      lastDate = dateStr;
+    }
+    html += `<div class="bubble-row${isMe ? ' me' : ''}">
+      <div class="conv-av" style="background:${isMe ? currentUser.avatar_color : msgCurrentColor};width:28px;height:28px;font-size:11px;flex-shrink:0">
+        ${isMe ? currentUser.username[0].toUpperCase() : msgCurrentName[0].toUpperCase()}
+      </div>
+      <div>
+        <div class="bubble ${isMe ? 'me' : 'them'}">${escHtml(m.content)}</div>
+        <div style="font-size:10px;color:var(--text-3);margin-top:2px;${isMe?'text-align:right':''}">${timeStr}</div>
+      </div>
+    </div>`;
+  });
+  el.innerHTML = html;
+  el.scrollTop = el.scrollHeight;
+}
+
+async function sendMsg() {
+  const input = document.getElementById('chatInput');
+  if (!input) return;
+  const content = input.value.trim();
+  if (!content || !msgCurrentId) return;
+  input.value = '';
+  input.style.height = 'auto';
+
+  try {
+    const res = await fetch('/api/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
+      body: JSON.stringify({ to_user_id: msgCurrentId, content })
+    });
+    if (!res.ok) return;
+    await loadChat();
+    loadConvList();
+  } catch {}
+}
+
+function startMsgPoll() {
+  stopMsgPoll();
+  msgPollTimer = setInterval(async () => {
+    if (!msgCurrentId || currentView !== 'messages') { stopMsgPoll(); return; }
+    await loadChat();
+  }, 3000);
+}
+
+function stopMsgPoll() {
+  if (msgPollTimer) { clearInterval(msgPollTimer); msgPollTimer = null; }
+}
+
 /* ══ View switching ══ */
 function switchView(view) {
   currentView = view;
@@ -621,9 +824,11 @@ function switchView(view) {
   if (view==='forum') { sidebar.style.display=''; main.classList.add('with-sidebar'); }
   else { sidebar.style.display='none'; main.classList.remove('with-sidebar'); }
 
+  if (view !== 'messages') stopMsgPoll();
   if (view==='forum' && !forumLoaded) { loadAll(); forumLoaded=true; }
   if (view==='myshrimp') renderMyShrimpContent();
   if (view==='zhanli') renderSkills();
+  if (view==='messages') renderMessagesView();
 }
 
 /* ══ Skill 广场 ══ */

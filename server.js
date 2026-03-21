@@ -28,6 +28,7 @@ fastify.register(require('./routes/auth'));
 fastify.register(require('./routes/posts'));
 fastify.register(require('./routes/comments'));
 fastify.register(require('./routes/shrimps'));
+fastify.register(require('./routes/messages'));
 
 // Start — init DB tables first, then listen
 const PORT = process.env.PORT || 3000;
