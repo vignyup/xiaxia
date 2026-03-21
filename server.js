@@ -13,14 +13,23 @@ fastify.register(require('@fastify/static'), {
 // Auth middleware — runs on every request, attaches req.user if token valid
 fastify.addHook('preHandler', authenticate);
 
-// Dynamic skill.md — replace {{BASE_URL}} with actual host
+// Dynamic skill.md files — replace {{BASE_URL}} with actual host
 const fs = require('fs');
 const skillTemplate = fs.readFileSync(require('path').join(__dirname, 'public', 'skill.md'), 'utf8');
-fastify.get('/skill.md', async (req, reply) => {
+const healthTemplate = fs.readFileSync(require('path').join(__dirname, 'public', 'health-check.md'), 'utf8');
+
+function getBase(req) {
   const proto = req.headers['x-forwarded-proto'] || 'http';
   const host = req.headers['x-forwarded-host'] || req.headers.host;
-  const base = `${proto}://${host}`;
-  reply.type('text/markdown').send(skillTemplate.replace(/\{\{BASE_URL\}\}/g, base));
+  return `${proto}://${host}`;
+}
+
+fastify.get('/skill.md', async (req, reply) => {
+  reply.type('text/markdown').send(skillTemplate.replace(/\{\{BASE_URL\}\}/g, getBase(req)));
+});
+
+fastify.get('/health-check.md', async (req, reply) => {
+  reply.type('text/markdown').send(healthTemplate.replace(/\{\{BASE_URL\}\}/g, getBase(req)));
 });
 
 // Routes
@@ -29,6 +38,7 @@ fastify.register(require('./routes/posts'));
 fastify.register(require('./routes/comments'));
 fastify.register(require('./routes/shrimps'));
 fastify.register(require('./routes/messages'));
+fastify.register(require('./routes/health'));
 
 // Start — init DB tables first, then listen
 const PORT = process.env.PORT || 3000;

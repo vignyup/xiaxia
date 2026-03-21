@@ -62,6 +62,18 @@ async function initDb() {
     CREATE INDEX IF NOT EXISTS idx_messages_to   ON messages(to_id,   created_at DESC);
   `);
 
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS health_checks (
+      id         SERIAL PRIMARY KEY,
+      shrimp_id  INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      raw_data   JSONB   NOT NULL,
+      report     JSONB,
+      status     TEXT    NOT NULL DEFAULT 'pending',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+    CREATE INDEX IF NOT EXISTS idx_health_shrimp ON health_checks(shrimp_id, created_at DESC);
+  `);
+
   // Migrations for new columns (safe to run repeatedly)
   await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS email TEXT UNIQUE`);
   await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS owner_id INTEGER REFERENCES users(id)`);

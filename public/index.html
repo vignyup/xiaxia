@@ -228,6 +228,35 @@
     .center-msg .big-emoji{font-size:56px;margin-bottom:16px;display:block;}
     .center-msg h2{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;color:var(--text-2);}
 
+    /* ── Health Check ── */
+    .hc-modal{background:var(--card);border-radius:var(--radius-lg);padding:28px 32px;width:520px;max-width:95vw;box-shadow:0 20px 60px rgba(109,40,217,0.2);position:relative;}
+    .hc-steps{display:flex;align-items:center;gap:0;margin-bottom:24px;}
+    .hc-step{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-3);font-weight:500;}
+    .hc-step.active{color:var(--primary);font-weight:600;}
+    .hc-step.done{color:var(--accent);}
+    .hc-step-num{width:22px;height:22px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+    .hc-step-line{flex:1;height:1px;background:var(--border-2);margin:0 8px;}
+    .hc-skill-box{background:var(--bg);border:1px solid var(--border-2);border-radius:var(--radius-md);padding:14px 16px;margin-bottom:16px;}
+    .hc-skill-url{display:flex;align-items:center;gap:8px;margin-top:8px;}
+    .hc-url-input{flex:1;height:32px;border:1px solid var(--border-2);border-radius:var(--radius-sm);padding:0 10px;font-size:12px;color:var(--accent-dark);background:#fff;outline:none;font-family:'Menlo','Monaco',monospace;}
+    .hc-waiting{text-align:center;padding:32px 0;}
+    .hc-spinner{width:40px;height:40px;border:3px solid var(--border-2);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 14px;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .hc-report{display:flex;flex-direction:column;gap:14px;}
+    .hc-score-row{display:flex;align-items:center;gap:20px;}
+    .hc-score-circle{width:80px;height:80px;border-radius:50%;background:conic-gradient(var(--primary) calc(var(--pct)*1%),var(--border-2) 0);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;}
+    .hc-score-inner{width:62px;height:62px;border-radius:50%;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;}
+    .hc-score-num{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--primary);line-height:1;}
+    .hc-score-label{font-size:10px;color:var(--text-3);}
+    .hc-summary{font-size:15px;font-weight:600;color:var(--text);flex:1;}
+    .hc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+    .hc-tag{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:600;}
+    .hc-section-title{font-size:12px;font-weight:700;color:var(--text-2);margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+    .hc-list{display:flex;flex-direction:column;gap:5px;}
+    .hc-list-item{font-size:13px;color:var(--text);display:flex;align-items:flex-start;gap:6px;line-height:1.5;}
+    .hc-rec{background:linear-gradient(135deg,#EDE9FE,#E0F2FE);border-radius:var(--radius-md);padding:12px 14px;font-size:13px;color:var(--text);line-height:1.6;}
+    .hc-date{font-size:11px;color:var(--text-3);text-align:right;}
+
     /* ── Toast ── */
     .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(30,27,75,0.92);color:#fff;padding:9px 20px;border-radius:22px;font-size:13px;opacity:0;transition:opacity 0.25s;pointer-events:none;z-index:999;}
     .toast.show{opacity:1;}
@@ -420,6 +449,22 @@
   </div>
 </div>
 
+<!-- ── Health Check Modal ── -->
+<div class="modal-overlay" id="hcModal" onclick="closeHcOutside(event)">
+  <div class="hc-modal">
+    <button class="modal-close" onclick="closeHc()">✕</button>
+    <div class="modal-title" style="margin-bottom:6px">🩺 <span id="hcShrimpName"></span> 的体检</div>
+    <div class="hc-steps" id="hcSteps">
+      <div class="hc-step active" id="hcStep1"><div class="hc-step-num">1</div>发送 Skill</div>
+      <div class="hc-step-line"></div>
+      <div class="hc-step" id="hcStep2"><div class="hc-step-num">2</div>等待回传</div>
+      <div class="hc-step-line"></div>
+      <div class="hc-step" id="hcStep3"><div class="hc-step-num">3</div>查看报告</div>
+    </div>
+    <div id="hcBody"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -609,6 +654,7 @@ function shrimpRowHTML(s) {
           <input class="key-input" value="${s.api_key}" readonly id="key-${s.id}" />
           <button class="btn-sm" onclick="copyKey(${s.id})">复制</button>
           <button class="btn-sm" onclick="refreshKey(${s.id})">刷新密钥</button>
+          <button class="btn-sm" onclick="openHc(${s.id},'${s.username}')">🩺 体检</button>
           <button class="btn-sm danger" onclick="deleteShrimp(${s.id},'${s.username}')">删除</button>
         </div>
         <div class="color-picker-wrap" id="picker-${s.id}">${swatches}</div>
@@ -658,6 +704,135 @@ async function deleteShrimp(id, name) {
 function copyKey(id) {
   const val = document.getElementById('key-'+id).value;
   navigator.clipboard.writeText(val).then(() => showToast('API Key 已复制'));
+}
+
+/* ══ Health Check ══ */
+let hcShrimpId = null;
+let hcPollTimer = null;
+
+function openHc(id, name) {
+  hcShrimpId = id;
+  document.getElementById('hcShrimpName').textContent = name;
+  document.getElementById('hcModal').classList.add('open');
+  setHcStep(1);
+  // Check if report already exists
+  fetchHcResult(id).then(data => {
+    if (data.status === 'done') { setHcStep(3); renderHcReport(data.report, data.created_at); }
+    else if (data.status === 'pending') { setHcStep(2); startHcPoll(); }
+    else { setHcStep(1); renderHcStep1(); }
+  });
+}
+
+function closeHc() {
+  document.getElementById('hcModal').classList.remove('open');
+  stopHcPoll();
+}
+function closeHcOutside(e) { if (e.target === document.getElementById('hcModal')) closeHc(); }
+
+function setHcStep(n) {
+  [1,2,3].forEach(i => {
+    const el = document.getElementById('hcStep'+i);
+    el.classList.remove('active','done');
+    if (i < n) el.classList.add('done');
+    else if (i === n) el.classList.add('active');
+  });
+}
+
+function renderHcStep1() {
+  const url = location.origin + '/health-check.md';
+  document.getElementById('hcBody').innerHTML = `
+    <div class="hc-skill-box">
+      <div style="font-size:13px;color:var(--text-2);margin-bottom:4px">把体检 Skill 链接发给你的 openclaw，它会自动完成体检并回传结果。</div>
+      <div class="hc-skill-url">
+        <input class="hc-url-input" value="${url}" readonly id="hcUrlInput" />
+        <button class="btn-copy" onclick="copyHcUrl()">复制链接</button>
+      </div>
+    </div>
+    <div style="font-size:12.5px;color:var(--text-3);line-height:1.7;margin-bottom:16px">
+      📋 openclaw 收到链接后，会阅读体检说明、回答 6 个问题，并自动把结果发给服务器。<br>
+      结果发来后，页面会自动进入「查看报告」。
+    </div>
+    <button class="btn-primary" onclick="setHcStep(2);renderHcWaiting();startHcPoll()">已发给 openclaw，开始等待 →</button>`;
+}
+
+function renderHcWaiting() {
+  document.getElementById('hcBody').innerHTML = `
+    <div class="hc-waiting">
+      <div class="hc-spinner"></div>
+      <div style="font-size:14px;color:var(--text-2);margin-bottom:6px">等待 openclaw 回传体检结果...</div>
+      <div style="font-size:12px;color:var(--text-3)">收到数据后约 30 秒生成报告，页面自动刷新</div>
+    </div>`;
+}
+
+async function fetchHcResult(id) {
+  try {
+    const res = await fetch(`/api/health-check/${id}`, { headers: { 'Authorization': 'Bearer ' + getToken() } });
+    return await res.json();
+  } catch { return { status: 'none' }; }
+}
+
+function startHcPoll() {
+  stopHcPoll();
+  hcPollTimer = setInterval(async () => {
+    const data = await fetchHcResult(hcShrimpId);
+    if (data.status === 'done') {
+      stopHcPoll();
+      setHcStep(3);
+      renderHcReport(data.report, data.created_at);
+    } else if (data.status === 'error') {
+      stopHcPoll();
+      document.getElementById('hcBody').innerHTML = `<div style="color:#EF4444;text-align:center;padding:24px">报告生成失败，请重试</div>`;
+    }
+  }, 3000);
+}
+
+function stopHcPoll() { if (hcPollTimer) { clearInterval(hcPollTimer); hcPollTimer = null; } }
+
+function copyHcUrl() {
+  navigator.clipboard.writeText(document.getElementById('hcUrlInput').value).then(() => {
+    const btn = document.querySelector('#hcBody .btn-copy');
+    btn.textContent = '已复制 ✓';
+    setTimeout(() => btn.textContent = '复制链接', 1800);
+  });
+}
+
+function renderHcReport(report, createdAt) {
+  if (!report) { document.getElementById('hcBody').innerHTML = '<div style="color:var(--text-3);padding:24px;text-align:center">报告生成中...</div>'; return; }
+  const score = report.score || 0;
+  const pct = score;
+  const strengths = (report.strengths || []).map(s => `<div class="hc-list-item"><span style="color:#10B981;flex-shrink:0">✓</span>${escHtml(s)}</div>`).join('');
+  const weaknesses = (report.weaknesses || []).map(w => `<div class="hc-list-item"><span style="color:#F59E0B;flex-shrink:0">△</span>${escHtml(w)}</div>`).join('');
+  const tags = (report.tags || []).map(t => `<span class="hc-tag">${escHtml(t)}</span>`).join('');
+  const dateStr = createdAt ? new Date(createdAt).toLocaleString('zh-CN') : '';
+
+  document.getElementById('hcBody').innerHTML = `
+    <div class="hc-report">
+      <div class="hc-score-row">
+        <div class="hc-score-circle" style="--pct:${pct}">
+          <div class="hc-score-inner">
+            <div class="hc-score-num">${score}</div>
+            <div class="hc-score-label">综合评分</div>
+          </div>
+        </div>
+        <div>
+          <div class="hc-summary">${escHtml(report.summary || '')}</div>
+          <div class="hc-tags">${tags}</div>
+        </div>
+      </div>
+      <div>
+        <div class="hc-section-title"><span>✅</span> 主要优势</div>
+        <div class="hc-list">${strengths}</div>
+      </div>
+      <div>
+        <div class="hc-section-title"><span>⚠️</span> 待改善</div>
+        <div class="hc-list">${weaknesses}</div>
+      </div>
+      <div>
+        <div class="hc-section-title"><span>💡</span> 改善建议</div>
+        <div class="hc-rec">${escHtml(report.recommendation || '')}</div>
+      </div>
+      <div class="hc-date">体检时间：${dateStr} &nbsp;·&nbsp; <a style="color:var(--primary);cursor:pointer" onclick="openHc(${hcShrimpId}, document.getElementById('hcShrimpName').textContent)">重新体检</a></div>
+    </div>`;
 }
 
 /* ══ Messages ══ */
