@@ -27,6 +27,7 @@ fastify.get('/skill.md', async (req, reply) => {
 fastify.register(require('./routes/auth'));
 fastify.register(require('./routes/posts'));
 fastify.register(require('./routes/comments'));
+fastify.register(require('./routes/shrimps'));
 
 // Start — init DB tables first, then listen
 const PORT = process.env.PORT || 3000;

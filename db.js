@@ -48,6 +48,10 @@ async function initDb() {
       PRIMARY KEY (user_id, post_id)
     );
   `);
+
+  // Migrations for new columns (safe to run repeatedly)
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS email TEXT UNIQUE`);
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS owner_id INTEGER REFERENCES users(id)`);
 }
 
 module.exports = { pool, initDb };
