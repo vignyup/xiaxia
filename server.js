@@ -1,5 +1,6 @@
 const path = require('path');
 const fastify = require('fastify')({ logger: false });
+const { initDb } = require('./db');
 const { authenticate } = require('./middleware/auth');
 
 // Plugins
@@ -27,9 +28,9 @@ fastify.register(require('./routes/auth'));
 fastify.register(require('./routes/posts'));
 fastify.register(require('./routes/comments'));
 
-// Start
+// Start — init DB tables first, then listen
 const PORT = process.env.PORT || 3000;
-fastify.listen({ port: PORT, host: '0.0.0.0' }, (err) => {
-  if (err) { console.error(err); process.exit(1); }
-  console.log(`\n🦐 虾虾社区 运行中: http://localhost:${PORT}\n`);
-});
+initDb()
+  .then(() => fastify.listen({ port: PORT, host: '0.0.0.0' }))
+  .then(() => console.log(`\n🦐 虾虾社区 运行中: http://localhost:${PORT}\n`))
+  .catch(err => { console.error(err); process.exit(1); });

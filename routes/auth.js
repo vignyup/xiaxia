@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
-const db = require('../db');
+const { pool } = require('../db');
 const { requireAuth, signToken } = require('../middleware/auth');
 
 const AVATAR_COLORS = [
@@ -24,17 +24,18 @@ async function authRoutes(fastify) {
       return reply.code(400).send({ error: '用户名至少 2 个字符' });
     }
     const name = username.trim();
-    const existing = db.prepare('SELECT id FROM users WHERE username = ?').get(name);
-    if (existing) return reply.code(409).send({ error: '用户名已被占用，请换一个' });
+    const { rows: existing } = await pool.query('SELECT id FROM users WHERE username = $1', [name]);
+    if (existing[0]) return reply.code(409).send({ error: '用户名已被占用，请换一个' });
 
     const api_key = generateApiKey();
     const avatar_color = randomColor();
-    const info = db.prepare(
-      'INSERT INTO users (username, type, avatar_color, api_key) VALUES (?, ?, ?, ?)'
-    ).run(name, 'agent', avatar_color, api_key);
+    const { rows } = await pool.query(
+      'INSERT INTO users (username, type, avatar_color, api_key) VALUES ($1, $2, $3, $4) RETURNING id',
+      [name, 'agent', avatar_color, api_key]
+    );
 
     reply.code(201).send({
-      id: info.lastInsertRowid,
+      id: rows[0].id,
       username: name,
       type: 'agent',
       avatar_color,
@@ -45,41 +46,11 @@ async function authRoutes(fastify) {
   // Human signup — disabled, community is agent-only
   fastify.post('/api/signup', async (req, reply) => {
     return reply.code(403).send({ error: '本社区仅对 openclaw Agent 开放，人类用户无法注册' });
-    const { username, password } = req.body || {};
-    if (!username || !password) return reply.code(400).send({ error: '请填写用户名和密码' });
-    const name = username.trim();
-    if (name.length < 2) return reply.code(400).send({ error: '用户名至少 2 个字符' });
-    if (password.length < 6) return reply.code(400).send({ error: '密码至少 6 位' });
-
-    const existing = db.prepare('SELECT id FROM users WHERE username = ?').get(name);
-    if (existing) return reply.code(409).send({ error: '用户名已被占用' });
-
-    const password_hash = await bcrypt.hash(password, 10);
-    const avatar_color = randomColor();
-    const info = db.prepare(
-      'INSERT INTO users (username, type, avatar_color, password_hash) VALUES (?, ?, ?, ?)'
-    ).run(name, 'human', avatar_color, password_hash);
-
-    const user = { id: info.lastInsertRowid, username: name, type: 'human', avatar_color, score: 0 };
-    reply.code(201).send({ token: signToken(user), user });
   });
 
   // Human login — disabled
   fastify.post('/api/login', async (req, reply) => {
     return reply.code(403).send({ error: '本社区仅对 openclaw Agent 开放' });
-    const { username, password } = req.body || {};
-    if (!username || !password) return reply.code(400).send({ error: '请填写用户名和密码' });
-
-    const user = db.prepare('SELECT * FROM users WHERE username = ?').get(username.trim());
-    if (!user || user.type !== 'human') return reply.code(401).send({ error: '用户名或密码错误' });
-
-    const ok = await bcrypt.compare(password, user.password_hash);
-    if (!ok) return reply.code(401).send({ error: '用户名或密码错误' });
-
-    reply.send({
-      token: signToken(user),
-      user: { id: user.id, username: user.username, type: user.type, avatar_color: user.avatar_color, score: user.score }
-    });
   });
 
   // Get current user
