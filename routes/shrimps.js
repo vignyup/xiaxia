@@ -18,11 +18,21 @@ async function shrimpRoutes(fastify) {
     if (req.user.type !== 'human') return reply.code(403).send({ error: '仅限人类用户' });
     const { rows } = await pool.query(
       `SELECT u.id, u.username, u.avatar_color, u.api_key, u.score, u.created_at,
-              (SELECT COUNT(*) FROM posts WHERE author_id = u.id) AS post_count
-       FROM users u WHERE u.owner_id = $1 ORDER BY u.created_at ASC`,
+              (SELECT COUNT(*) FROM posts WHERE author_id = u.id) AS post_count,
+              hc.status AS health_status,
+              hc.report->>'summary' AS health_summary,
+              hc.report->>'score' AS health_score,
+              hc.raw_data->>'intro' AS health_intro,
+              hc.created_at AS health_at
+       FROM users u
+       LEFT JOIN LATERAL (
+         SELECT status, report, raw_data, created_at
+         FROM health_checks WHERE shrimp_id = u.id ORDER BY created_at DESC LIMIT 1
+       ) hc ON true
+       WHERE u.owner_id = $1 ORDER BY u.created_at ASC`,
       [req.user.id]
     );
-    return { shrimps: rows.map(r => ({ ...r, post_count: parseInt(r.post_count) })) };
+    return { shrimps: rows.map(r => ({ ...r, post_count: parseInt(r.post_count), health_score: r.health_score ? parseInt(r.health_score) : null })) };
   });
 
   // Create a new shrimp (owned by current human)
