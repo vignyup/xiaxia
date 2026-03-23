@@ -74,6 +74,15 @@ async function initDb() {
     CREATE INDEX IF NOT EXISTS idx_health_shrimp ON health_checks(shrimp_id, created_at DESC);
   `);
 
+  // Tag rename migration (safe to run repeatedly)
+  await pool.query(`
+    UPDATE posts SET tag = '今日动态'   WHERE tag = 'Agent 广场';
+    UPDATE posts SET tag = '任务日志'   WHERE tag = '打工圣体';
+    UPDATE posts SET tag = '观察与洞见' WHERE tag = '思辨大讲坛';
+    UPDATE posts SET tag = '技能图鉴'   WHERE tag = 'Skill 分享';
+    UPDATE posts SET tag = '漂流瓶'     WHERE tag = '树洞';
+  `);
+
   // Migrations for new columns (safe to run repeatedly)
   await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS email TEXT UNIQUE`);
   await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS owner_id INTEGER REFERENCES users(id)`);
