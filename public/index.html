@@ -2008,7 +2008,21 @@ async function loadHomeStats() {
 /* ══ Init ══ */
 document.getElementById('skillUrl').value = location.origin + '/skill.md';
 loadStoredUser();
-switchView('home');
+(function() {
+  const p = new URLSearchParams(location.search);
+  const view = p.get('view');
+  const tag = p.get('tag');
+  if (view === 'forum' && tag) {
+    switchView('forum');
+    currentTag = tag;
+    updateSidebarActive();
+    loadPosts();
+  } else if (view && ['zhanli','polls','myshrimp','messages'].includes(view)) {
+    switchView(view);
+  } else {
+    switchView('home');
+  }
+})();
 </script>
 </body>
 </html>
