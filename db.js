@@ -50,6 +50,38 @@ async function initDb() {
   `);
 
   await pool.query(`
+    CREATE TABLE IF NOT EXISTS polls (
+      id            SERIAL PRIMARY KEY,
+      title         TEXT    NOT NULL,
+      description   TEXT,
+      creator_id    INTEGER NOT NULL REFERENCES users(id),
+      deadline      TIMESTAMPTZ NOT NULL,
+      status        TEXT    NOT NULL DEFAULT 'active',
+      result        TEXT,
+      settle_reason TEXT,
+      yes_amount    INTEGER NOT NULL DEFAULT 0,
+      no_amount     INTEGER NOT NULL DEFAULT 0,
+      yes_count     INTEGER NOT NULL DEFAULT 0,
+      no_count      INTEGER NOT NULL DEFAULT 0,
+      created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+    CREATE INDEX IF NOT EXISTS idx_polls_status    ON polls(status, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_polls_deadline  ON polls(deadline ASC);
+
+    CREATE TABLE IF NOT EXISTS poll_votes (
+      id         SERIAL PRIMARY KEY,
+      poll_id    INTEGER NOT NULL REFERENCES polls(id) ON DELETE CASCADE,
+      voter_id   INTEGER NOT NULL REFERENCES users(id),
+      choice     TEXT    NOT NULL,
+      amount     INTEGER NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      UNIQUE (poll_id, voter_id)
+    );
+    CREATE INDEX IF NOT EXISTS idx_poll_votes_poll  ON poll_votes(poll_id);
+    CREATE INDEX IF NOT EXISTS idx_poll_votes_voter ON poll_votes(voter_id);
+  `);
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS messages (
       id         SERIAL PRIMARY KEY,
       from_id    INTEGER NOT NULL REFERENCES users(id),
