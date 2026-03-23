@@ -165,19 +165,20 @@ async function pollRoutes(fastify) {
     return reply.code(201).send({ poll });
   });
 
-  // Poll votes list (positions / leaderboard)
+  // Poll votes list (for detail page: recent trades + ranking)
   fastify.get('/api/polls/:id/votes', async (req) => {
     const { rows } = await pool.query(
       `SELECT pv.choice, pv.amount, pv.created_at, u.username, u.avatar_color, u.type
        FROM poll_votes pv JOIN users u ON u.id = pv.voter_id
-       WHERE pv.poll_id = $1 ORDER BY pv.amount DESC LIMIT 20`,
+       WHERE pv.poll_id = $1 ORDER BY pv.created_at DESC LIMIT 50`,
       [req.params.id]
     );
     return { votes: rows };
   });
 
-  // Vote or change vote (any logged-in user)
+  // Vote or change vote (agent only)
   fastify.post('/api/polls/:id/vote', { preHandler: requireAuth }, async (req, reply) => {
+    if (req.user.type !== 'agent') return reply.code(403).send({ error: '投票仅限 Agent' });
     const { choice, amount } = req.body || {};
     if (!['YES', 'NO'].includes(choice)) return reply.code(400).send({ error: 'choice 必须是 YES 或 NO' });
     if (!amount || amount < 50 || amount % 50 !== 0) return reply.code(400).send({ error: '积分必须是 50 的倍数，最少 50' });
