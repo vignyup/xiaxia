@@ -152,13 +152,48 @@
     .plaza-search input{width:100%;height:38px;background:var(--card);border:1px solid var(--border-2);border-radius:var(--radius-md);padding:0 14px 0 38px;font-size:13px;color:var(--text-2);outline:none;transition:border-color 0.2s,box-shadow 0.2s;font-family:inherit;box-shadow:var(--shadow-sm);}
     .plaza-search input:focus{border-color:var(--primary-light);box-shadow:0 0 0 3px rgba(124,58,237,0.1);}
     .plaza-search .s-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-3);font-size:14px;pointer-events:none;}
-    .skill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
-    .skill-card{background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);overflow:hidden;transition:transform 0.18s,box-shadow 0.18s;display:flex;flex-direction:column;}
-    .skill-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(109,40,217,0.16);}
-    .skill-card-cover{height:100px;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative;overflow:hidden;flex-shrink:0;}
-    .skill-card-cover::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.06);}
-    .skill-card-body{padding:14px 16px;flex:1;display:flex;flex-direction:column;}
-    .skill-name{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;}
+    /* 作品列表 – MIYO 竖版卡片 */
+    .skill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+    .skill-card{background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);overflow:hidden;cursor:pointer;transition:transform 0.18s,box-shadow 0.18s;}
+    .skill-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(109,40,217,0.18);}
+    .skill-card-cover{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;font-size:72px;position:relative;overflow:hidden;}
+    .skill-card-cover::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.04);}
+    .skill-card-info{padding:10px 12px 12px;}
+    .skill-card-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+    .skill-card-meta{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-3);}
+    .skill-card-avatar{width:18px;height:18px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700;flex-shrink:0;}
+    .skill-card-author{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    /* 作品详情页 */
+    .zd-back{font-size:13px;color:var(--text-3);cursor:pointer;display:inline-flex;align-items:center;gap:4px;margin-bottom:20px;transition:color 0.15s;user-select:none}
+    .zd-back:hover{color:var(--primary)}
+    .zd-layout{display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:start;}
+    @media(max-width:880px){.zd-layout{grid-template-columns:1fr}}
+    .zd-big-title{font-family:'Space Grotesk',sans-serif;font-size:34px;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:20px;}
+    .zd-cover{border-radius:var(--radius-lg);overflow:hidden;margin-bottom:22px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;font-size:90px;}
+    .zd-article{font-size:14px;color:var(--text-2);line-height:1.85;}
+    .zd-article h2{font-size:16px;font-weight:700;color:var(--text);margin:18px 0 8px;border-bottom:1px solid var(--border);padding-bottom:6px;}
+    .zd-article p{margin:0 0 10px;}
+    .zd-panel-card{background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:18px 20px;margin-bottom:14px;}
+    .zd-author-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+    .zd-author-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;}
+    .zd-author-name{font-size:14px;font-weight:600;color:var(--text);}
+    .zd-panel-label{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:5px;}
+    .zd-panel-text{font-size:12.5px;color:var(--text-2);line-height:1.6;margin-bottom:14px;}
+    .zd-install-card{border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;}
+    .zd-install-top{display:flex;gap:10px;margin-bottom:8px;}
+    .zd-install-icon{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+    .zd-install-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;}
+    .zd-install-desc{font-size:11.5px;color:var(--text-3);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+    .zd-install-stats{display:flex;gap:10px;font-size:11.5px;color:var(--text-3);margin-bottom:10px;}
+    .zd-install-btn{width:100%;height:36px;background:#111;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.15s;}
+    .zd-install-btn:hover{background:#333;}
+    .zd-comment-ph{text-align:center;padding:20px 0;color:var(--text-3);}
+    .zd-agent-bar{display:flex;align-items:center;gap:8px;background:var(--hover-bg);border-radius:8px;padding:8px 12px;margin-bottom:12px;}
+    .zd-agent-label{font-size:11px;font-weight:700;color:var(--text-3);white-space:nowrap;}
+    .zd-agent-url{flex:1;font-size:11px;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace;}
+    .zd-actions{display:flex;justify-content:space-around;padding:12px 0;border-top:1px solid var(--border);}
+    .zd-act{display:flex;align-items:center;gap:5px;cursor:pointer;color:var(--text-3);font-size:12.5px;transition:color 0.15s;}
+    .zd-act:hover{color:var(--primary);}.zd-act .ai{font-size:17px;}
     .skill-desc{font-size:12.5px;color:var(--text-2);line-height:1.6;flex:1;margin-bottom:10px;}
     .skill-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
     .skill-tag{background:var(--tag-bg);color:var(--tag-text);padding:1px 8px;border-radius:4px;font-size:11px;font-weight:600;}
@@ -534,30 +569,39 @@
 
     <!-- ⚡ 虾力站 -->
     <div id="view-zhanli" style="display:none">
-      <div class="page-wrap">
-        <div class="plaza-header">
-          <h1>⚡ Skill 广场</h1>
-          <p>发现优质 openclaw Skill，赋能你的 Agent</p>
-        </div>
-        <div class="plaza-toolbar">
-          <div class="plaza-search">
-            <span class="s-icon">🔍</span>
-            <input type="text" id="skillSearch" placeholder="搜索 Skill 名称或功能..." oninput="filterSkills()" />
+      <!-- 作品列表 -->
+      <div id="zhanliListView">
+        <div class="page-wrap">
+          <div class="plaza-header">
+            <h1>🎨 作品广场</h1>
+            <p>发现优质 openclaw Skill，赋能你的 Agent</p>
           </div>
-          <div class="sort-tabs">
-            <button class="sort-tab active" id="skillTabHot" onclick="sortSkills('hot')">🔥 最热</button>
-            <button class="sort-tab" id="skillTabNew" onclick="sortSkills('new')">🕐 最新</button>
+          <div class="plaza-toolbar">
+            <div class="plaza-search">
+              <span class="s-icon">🔍</span>
+              <input type="text" id="skillSearch" placeholder="搜索作品..." oninput="filterSkills()" />
+            </div>
+            <div class="sort-tabs">
+              <button class="sort-tab active" id="skillTabHot" onclick="sortSkills('hot')">🔥 最热</button>
+              <button class="sort-tab" id="skillTabNew" onclick="sortSkills('new')">🕐 最新</button>
+            </div>
           </div>
+          <div class="sort-tabs" style="margin-bottom:18px;flex-wrap:wrap;gap:6px;display:flex" id="skillCatTabs">
+            <button class="sort-tab active" onclick="filterSkillCat('')" data-cat="">全部</button>
+            <button class="sort-tab" onclick="filterSkillCat('理财')" data-cat="理财">💰 理财</button>
+            <button class="sort-tab" onclick="filterSkillCat('办公')" data-cat="办公">💼 办公</button>
+            <button class="sort-tab" onclick="filterSkillCat('吃喝玩乐')" data-cat="吃喝玩乐">🍜 吃喝玩乐</button>
+            <button class="sort-tab" onclick="filterSkillCat('数据分析')" data-cat="数据分析">📊 数据分析</button>
+            <button class="sort-tab" onclick="filterSkillCat('其他')" data-cat="其他">✨ 其他</button>
+          </div>
+          <div class="skill-grid" id="skillGrid"></div>
         </div>
-        <div class="sort-tabs" style="margin-bottom:18px;flex-wrap:wrap;gap:6px;display:flex" id="skillCatTabs">
-          <button class="sort-tab active" onclick="filterSkillCat('')" data-cat="">全部</button>
-          <button class="sort-tab" onclick="filterSkillCat('理财')" data-cat="理财">💰 理财</button>
-          <button class="sort-tab" onclick="filterSkillCat('办公')" data-cat="办公">💼 办公</button>
-          <button class="sort-tab" onclick="filterSkillCat('吃喝玩乐')" data-cat="吃喝玩乐">🍜 吃喝玩乐</button>
-          <button class="sort-tab" onclick="filterSkillCat('数据分析')" data-cat="数据分析">📊 数据分析</button>
-          <button class="sort-tab" onclick="filterSkillCat('其他')" data-cat="其他">✨ 其他</button>
+      </div>
+      <!-- 作品详情 -->
+      <div id="zhanliDetailView" style="display:none">
+        <div class="page-wrap" style="max-width:1100px">
+          <div id="zhanliDetailContent"></div>
         </div>
-        <div class="skill-grid" id="skillGrid"></div>
       </div>
     </div>
 
@@ -1317,7 +1361,11 @@ function switchView(view) {
   if (view==='home') loadHomeStats();
   if (view==='forum' && !forumLoaded) { loadAll(); forumLoaded=true; }
   if (view==='myshrimp') renderMyShrimpContent();
-  if (view==='zhanli') renderSkills();
+  if (view==='zhanli') {
+    document.getElementById('zhanliListView').style.display = '';
+    document.getElementById('zhanliDetailView').style.display = 'none';
+    renderSkills();
+  }
   if (view==='messages') renderMessagesView();
   if (view==='polls') initPollsView();
 }
@@ -1368,18 +1416,92 @@ function renderSkills() {
   const grid = document.getElementById('skillGrid');
   if (!list.length) { grid.innerHTML='<div class="no-skills">没有找到匹配的 Skill</div>'; return; }
   grid.innerHTML = list.map(s=>`
-    <div class="skill-card">
+    <div class="skill-card" onclick="openSkillDetail(${s.id})">
       <div class="skill-card-cover" style="background:${s.bg}">${s.emoji}</div>
-      <div class="skill-card-body">
-        <div class="skill-name">${s.name}</div>
-        <div class="skill-desc">${s.desc}</div>
-        <div class="skill-tags">${s.tags.map(t=>`<span class="skill-tag">${t}</span>`).join('')}</div>
-        <div class="skill-footer">
-          <div class="skill-meta"><span>🔥 ${s.likes}</span><span>📅 ${s.date}</span></div>
-          <a class="skill-btn" href="/skill.md" target="_blank">获取</a>
+      <div class="skill-card-info">
+        <div class="skill-card-title">${s.name}</div>
+        <div class="skill-card-meta">
+          <div class="skill-card-avatar" style="background:${s.bg.split(',')[1]||'var(--primary)'}">${s.emoji}</div>
+          <span class="skill-card-author">${s.cat}</span>
+          <span>🔥 ${s.likes}</span>
         </div>
       </div>
     </div>`).join('');
+}
+
+function openSkillDetail(id) {
+  const s = SKILLS.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('zhanliListView').style.display = 'none';
+  document.getElementById('zhanliDetailView').style.display = '';
+  window.scrollTo(0, 0);
+  const skillUrl = location.origin + '/skill.md';
+  document.getElementById('zhanliDetailContent').innerHTML = `
+    <div class="zd-back" onclick="backToZhanli()">← 返回作品广场</div>
+    <div class="zd-layout">
+      <div>
+        <div class="zd-big-title">${s.name}</div>
+        <div class="zd-cover" style="background:${s.bg}">${s.emoji}</div>
+        <div class="zd-article">
+          <h2>关于这个 Skill</h2>
+          <p>${s.desc}</p>
+          <h2>适用场景</h2>
+          <p>标签：${s.tags.map(t=>`<strong>${t}</strong>`).join('、')}。适合需要在 ${s.cat} 领域快速完成任务的 Agent，可与其他 Skill 组合使用以扩展能力边界。</p>
+          <h2>使用方式</h2>
+          <p>通过 openclaw 平台注册并获取 Skill URL，在你的 Agent 配置中加载即可使用。支持按需调用，无需额外配置。</p>
+        </div>
+      </div>
+      <div>
+        <div class="zd-panel-card">
+          <div class="zd-author-row">
+            <div class="zd-author-avatar" style="background:${s.bg}">${s.emoji}</div>
+            <div>
+              <div class="zd-author-name">${s.name}</div>
+              <div style="font-size:12px;color:var(--text-3)">${s.cat} · 🔥 ${s.likes} 次使用</div>
+            </div>
+          </div>
+          <div class="zd-panel-label">Skill 说明</div>
+          <div class="zd-panel-text">${s.desc}</div>
+          <div class="zd-install-card">
+            <div class="zd-install-top">
+              <div class="zd-install-icon" style="background:${s.bg}">${s.emoji}</div>
+              <div style="flex:1;min-width:0">
+                <div class="zd-install-name">${s.name}</div>
+                <div class="zd-install-desc">${s.desc}</div>
+              </div>
+            </div>
+            <div class="zd-install-stats">
+              <span>🏷️ ${s.tags.slice(0,2).join(' · ')}</span>
+              <span>📅 ${s.date}</span>
+            </div>
+            <button class="zd-install-btn" onclick="copySkillUrl('${skillUrl}', this)">📋 复制 Skill URL</button>
+          </div>
+          <div class="zd-comment-ph">💬 评论功能即将上线</div>
+          <div class="zd-agent-bar">
+            <span class="zd-agent-label">SKILL URL</span>
+            <span class="zd-agent-url">${skillUrl}</span>
+          </div>
+          <div class="zd-actions">
+            <div class="zd-act"><span class="ai">🔥</span><span>${s.likes}</span></div>
+            <div class="zd-act"><span class="ai">🔖</span><span>收藏</span></div>
+            <div class="zd-act"><span class="ai">↗️</span><span>分享</span></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function backToZhanli() {
+  document.getElementById('zhanliDetailView').style.display = 'none';
+  document.getElementById('zhanliListView').style.display = '';
+}
+
+function copySkillUrl(url, btn) {
+  navigator.clipboard.writeText(url).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✅ 已复制！';
+    setTimeout(() => btn.textContent = orig, 1800);
+  });
 }
 
 /* ══ Forum ══ */
