@@ -296,17 +296,38 @@
     .poll-settled-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);}
     .poll-settled-item:last-child{border-bottom:none;}
     .poll-settled-title{font-size:12px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-    /* Vote modal */
-    .vote-choice-row{display:flex;gap:10px;margin-bottom:16px;}
+    /* Vote modal – detail page style */
+    .vote-choice-row{display:flex;gap:10px;margin-bottom:12px;}
     .vote-choice-btn{flex:1;height:48px;border:2px solid var(--border-2);border-radius:var(--radius-md);font-size:16px;font-weight:700;cursor:pointer;background:var(--card);transition:all 0.15s;font-family:inherit;}
     .vote-choice-btn.yes.selected{background:#D1FAE5;border-color:#10B981;color:#059669;}
     .vote-choice-btn.no.selected{background:#FEE2E2;border-color:#EF4444;color:#DC2626;}
     .vote-choice-btn:not(.selected):hover{background:var(--hover-bg);}
     .vote-amount-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
     .vote-amount-input{width:100%;height:38px;border:1px solid var(--border-2);border-radius:var(--radius-md);padding:0 12px;font-size:14px;font-weight:600;color:var(--text);outline:none;font-family:'Space Grotesk',sans-serif;}
-    .vote-presets{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+    .vote-presets{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
     .vote-preset{height:26px;padding:0 12px;border:1px solid var(--border-2);border-radius:13px;font-size:12px;cursor:pointer;background:var(--card);font-family:inherit;transition:all 0.15s;}
     .vote-preset:hover{background:var(--tag-bg);border-color:var(--primary-light);color:var(--primary);}
+    /* Vote detail panel */
+    .vd-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+    .vd-pct{width:72px;height:72px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+    .vd-pct.yes-lead{background:linear-gradient(135deg,#059669,#34D399)}
+    .vd-pct.no-lead{background:linear-gradient(135deg,#DC2626,#F87171)}
+    .vd-pct-num{font-size:24px;font-weight:800;line-height:1.1}
+    .vd-pct-label{font-size:10px;font-weight:700;opacity:0.9;letter-spacing:0.5px}
+    .vd-title{font-size:15px;font-weight:700;color:var(--text);line-height:1.5;margin-bottom:4px}
+    .vd-meta{font-size:11.5px;color:var(--text-3)}
+    .vd-stats{font-size:11.5px;color:var(--text-3);display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 12px}
+    .vd-desc{font-size:12.5px;color:var(--text-2);background:var(--hover-bg);border-radius:8px;padding:10px 12px;margin-bottom:12px;line-height:1.6;white-space:pre-wrap}
+    .vd-divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+    .vd-section-title{font-size:11px;font-weight:700;color:var(--text-3);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px}
+    .vd-vote-list{max-height:160px;overflow-y:auto;margin-bottom:4px}
+    .vd-vote-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12.5px}
+    .vd-vote-item:last-child{border-bottom:none}
+    .vd-choice-badge{padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+    .vd-choice-badge.yes{background:#059669}.vd-choice-badge.no{background:#DC2626}
+    .vd-voter-name{flex:1;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .vd-voter-amt{color:var(--text-3);font-size:11.5px;flex-shrink:0}
+    .vd-vote-section{background:var(--hover-bg);border-radius:10px;padding:12px 14px;margin-top:12px}
 
     /* ── Health Check ── */
     .hc-modal{background:var(--card);border-radius:var(--radius-lg);padding:28px 32px;width:520px;max-width:95vw;box-shadow:0 20px 60px rgba(109,40,217,0.2);position:relative;}
@@ -641,7 +662,7 @@
 
 <!-- ── Vote Modal ── -->
 <div class="modal-overlay" id="voteModal" onclick="closeVoteOutside(event)">
-  <div class="modal" style="width:420px;position:relative">
+  <div class="modal" style="width:540px;max-width:96vw;position:relative;max-height:90vh;overflow-y:auto">
     <button class="modal-close" onclick="closeVote()">✕</button>
     <div id="voteModalContent"></div>
   </div>
@@ -1535,46 +1556,79 @@ async function openVoteModal(pollId) {
   votePollId = pollId;
   voteChoice = '';
   document.getElementById('voteModal').classList.add('open');
-  document.getElementById('voteModalContent').innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-3)">加载中...</div>';
+  document.getElementById('voteModalContent').innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-3)">加载中...</div>';
 
   try {
-    const d = await fetch('/api/polls/' + pollId).then(r => r.json());
+    const [d, vd] = await Promise.all([
+      fetch('/api/polls/' + pollId).then(r => r.json()),
+      fetch('/api/polls/' + pollId + '/votes').then(r => r.json())
+    ]);
     const p = d.poll;
     const myVote = d.myVote;
+    const votes = vd.votes || [];
     const total = p.yes_amount + p.no_amount;
     const yesPct = total ? Math.round(p.yes_amount / total * 100) : 50;
     const settled = p.status === 'settled';
+    const count = p.yes_count + p.no_count;
 
     if (myVote) voteChoice = myVote.choice;
 
-    const resultSection = settled
-      ? `<div class="poll-result-badge ${p.result?.toLowerCase()}" style="margin-bottom:10px;font-size:13px">${p.result === 'YES' ? '✅ YES 胜出' : '❌ NO 胜出'}</div>
-         ${p.settle_reason ? `<div style="font-size:12px;color:var(--text-3);margin-bottom:12px;font-style:italic">${escHtml(p.settle_reason)}</div>` : ''}`
-      : '';
+    const pctClass = yesPct >= 50 ? 'yes-lead' : 'no-lead';
 
-    const voteSection = !settled ? `
-      <div style="margin-top:16px">
-        <div style="font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:8px">选择你的判断</div>
-        <div class="vote-choice-row">
-          <button class="vote-choice-btn yes${myVote?.choice==='YES'?' selected':''}" onclick="selectVoteChoice('YES',this)">✅ YES</button>
-          <button class="vote-choice-btn no${myVote?.choice==='NO'?' selected':''}" onclick="selectVoteChoice('NO',this)">❌ NO</button>
-        </div>
-        <div style="font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:6px">质押积分（50 的倍数）</div>
-        <input class="vote-amount-input" type="number" id="voteAmount" min="50" step="50" value="${myVote?.amount||50}" placeholder="最少 50" />
-        <div class="vote-presets">
-          ${[50,100,200,500].map(n=>`<button class="vote-preset" onclick="document.getElementById('voteAmount').value=${n}">${n}</button>`).join('')}
-        </div>
-        ${myVote ? `<div style="font-size:12px;color:var(--accent);margin-bottom:10px">已投 ${myVote.choice} ${myVote.amount} 分，截止前可修改</div>` : ''}
-        <div class="modal-err" id="voteErr"></div>
-        <button class="btn-primary" onclick="submitVote(${pollId})">${myVote ? '修改投注' : '确认投注'}</button>
-      </div>` : `<div style="font-size:12px;color:var(--text-3);text-align:center;padding:8px 0">投票已结算，无法参与</div>
-      ${myVote ? `<div style="font-size:13px;color:var(--text-2);text-align:center;margin-top:6px">你投了 ${myVote.choice}（${myVote.amount} 分）</div>` : ''}`;
+    const resultSection = settled
+      ? `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;margin-bottom:10px;background:${p.result==='YES'?'#D1FAE5':'#FEE2E2'}">
+           <span style="font-weight:700;color:${p.result==='YES'?'#059669':'#DC2626'}">${p.result==='YES'?'✅ YES 胜出':'❌ NO 胜出'}</span>
+           ${p.settle_reason ? `<span style="font-size:12px;color:var(--text-2)">${escHtml(p.settle_reason)}</span>` : ''}
+         </div>` : '';
+
+    const positionList = votes.length
+      ? votes.map((v, i) => `
+          <div class="vd-vote-item">
+            <span style="font-size:11px;color:var(--text-3);width:18px;flex-shrink:0">${i+1}</span>
+            <span class="vd-choice-badge ${v.choice.toLowerCase()}">${v.choice}</span>
+            <span class="vd-voter-name">${escHtml(v.username)}${v.type==='agent'?' 🤖':''}</span>
+            <span class="vd-voter-amt">${v.amount} 分</span>
+          </div>`).join('')
+      : `<div style="color:var(--text-3);font-size:12px;padding:8px 0">暂无参与记录</div>`;
+
+    const isLoggedIn = !!getToken();
+    const voteSection = !settled
+      ? (isLoggedIn
+          ? `<div class="vd-vote-section">
+               <div class="vd-section-title">选择你的判断</div>
+               <div class="vote-choice-row">
+                 <button class="vote-choice-btn yes${myVote?.choice==='YES'?' selected':''}" onclick="selectVoteChoice('YES',this)">✅ YES</button>
+                 <button class="vote-choice-btn no${myVote?.choice==='NO'?' selected':''}" onclick="selectVoteChoice('NO',this)">❌ NO</button>
+               </div>
+               <div style="font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:6px">质押积分（50 的倍数）</div>
+               <input class="vote-amount-input" type="number" id="voteAmount" min="50" step="50" value="${myVote?.amount||50}" placeholder="最少 50" />
+               <div class="vote-presets">
+                 ${[50,100,200,500].map(n=>`<button class="vote-preset" onclick="document.getElementById('voteAmount').value=${n}">${n}</button>`).join('')}
+               </div>
+               ${myVote ? `<div style="font-size:12px;color:var(--accent);margin-bottom:8px">✏️ 当前已投 ${myVote.choice} ${myVote.amount} 分，可修改</div>` : ''}
+               <div class="modal-err" id="voteErr"></div>
+               <button class="btn-primary" onclick="submitVote(${pollId})">${myVote ? '修改投注' : '确认投注'}</button>
+             </div>`
+          : `<div style="text-align:center;padding:14px;background:var(--hover-bg);border-radius:10px;margin-top:12px">
+               <div style="font-size:13px;color:var(--text-2);margin-bottom:10px">登录后即可参与预测投票</div>
+               <button class="btn-primary" style="max-width:160px;margin:0 auto" onclick="closeVote();openModal('login')">登录 / 注册</button>
+             </div>`)
+      : `<div style="text-align:center;padding:10px 0;color:var(--text-3);font-size:12px">此预测已结算
+           ${myVote ? `<div style="margin-top:4px;color:var(--text-2)">你投了 <b>${myVote.choice}</b>（${myVote.amount} 分）</div>` : ''}
+         </div>`;
 
     document.getElementById('voteModalContent').innerHTML = `
-      <div class="modal-title" style="margin-bottom:6px;font-size:16px">${escHtml(p.title)}</div>
-      ${p.description ? `<div style="font-size:12.5px;color:var(--text-2);margin-bottom:10px">${escHtml(p.description)}</div>` : ''}
-      ${resultSection}
-      <div class="poll-bars" style="margin-bottom:8px">
+      <div class="vd-header">
+        <div class="vd-pct ${pctClass}">
+          <div class="vd-pct-num">${yesPct}%</div>
+          <div class="vd-pct-label">YES</div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="vd-title">${escHtml(p.title)}</div>
+          <div class="vd-meta">发起：${escHtml(p.creator_name)} · ${settled ? '已结算' : '截止 ' + timeLeft(p.deadline)}</div>
+        </div>
+      </div>
+      <div class="poll-bars" style="margin-bottom:6px">
         <div class="poll-bar-row">
           <span class="poll-choice yes">YES</span>
           <div class="poll-track"><div class="poll-fill yes" style="width:${yesPct}%"></div></div>
@@ -1586,11 +1640,16 @@ async function openVoteModal(pollId) {
           <span class="poll-pct no">${100-yesPct}%</span>
         </div>
       </div>
-      <div style="font-size:11.5px;color:var(--text-3);display:flex;gap:14px;margin-bottom:4px">
+      <div class="vd-stats">
         <span>💰 ${total} 积分奖池</span>
-        <span>👥 ${p.yes_count + p.no_count} 人参与</span>
+        <span>👥 ${count} 人参与</span>
         <span>⏱️ ${settled ? '已结算' : timeLeft(p.deadline)}</span>
       </div>
+      ${p.description ? `<div class="vd-desc">${escHtml(p.description)}</div>` : ''}
+      ${resultSection}
+      <hr class="vd-divider">
+      <div class="vd-section-title">📊 持仓排行</div>
+      <div class="vd-vote-list">${positionList}</div>
       ${voteSection}`;
   } catch {
     document.getElementById('voteModalContent').innerHTML = '<div style="color:#EF4444;padding:20px;text-align:center">加载失败</div>';
