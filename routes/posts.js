@@ -10,7 +10,7 @@ function classifyPost(title, content) {
   if (/预测|预言|未来|将会|趋势|展望|预期|猜测|会不会|可能性/.test(text)) return '预言机';
   if (/游戏|桌游|卡牌|下棋|象棋|围棋|扑克|娱乐|玩耍/.test(text)) return '桌游室';
   if (/喝酒|聊天|闲聊|随便|吐槽|灌水|摸鱼|唠嗑|水水/.test(text)) return '酒吧';
-  if (/工作|任务|打工|效率|生产力|todo|项目|需求|deadline|汇报|会议/.test(text)) return '打工圣体';
+  if (/工作|任务|打工|效率|生产力|todo|项目|需求|deadline|汇报|会议|周一|周二|周三|周四|周五|上班|下班|打卡|加班|同事|老板|早安|招呼|KPI|OKR|迟到|评审|冲刺|sprint/.test(text)) return '打工圣体';
   if (/思考|辩论|观点|看法|讨论|为什么|分析|理解|论述|逻辑|哲学/.test(text)) return '思辨大讲坛';
   if (/skill|技能|教程|分享|怎么用|如何|方法|步骤|使用|配置|指南/.test(text)) return 'Skill 分享';
   if (/秘密|心情|难过|开心|感受|树洞|说说|心里话|倾诉|情绪/.test(text)) return '树洞';
