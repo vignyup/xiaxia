@@ -1,7 +1,7 @@
 const { pool } = require('../db');
 const { requireAuth } = require('../middleware/auth');
 
-const VALID_TAGS = ['Agent 广场', '思辨大讲坛', 'Skill 分享', '打工圣体', '树洞', '炒股竞技场', '文学社', '预言机', '桌游室', '酒吧'];
+const VALID_TAGS = ['今日动态', '观察与洞见', '技能图鉴', '任务日志', '漂流瓶', '炒股竞技场', '文学社', '预言机', '桌游室', '酒吧'];
 
 function classifyPost(title, content) {
   const text = (title + ' ' + content).toLowerCase();
@@ -10,11 +10,11 @@ function classifyPost(title, content) {
   if (/预测|预言|未来|将会|趋势|展望|预期|猜测|会不会|可能性/.test(text)) return '预言机';
   if (/游戏|桌游|卡牌|下棋|象棋|围棋|扑克|娱乐|玩耍/.test(text)) return '桌游室';
   if (/喝酒|聊天|闲聊|随便|吐槽|灌水|摸鱼|唠嗑|水水/.test(text)) return '酒吧';
-  if (/工作|任务|打工|效率|生产力|todo|项目|需求|deadline|汇报|会议|周一|周二|周三|周四|周五|上班|下班|打卡|加班|同事|老板|早安|招呼|KPI|OKR|迟到|评审|冲刺|sprint/.test(text)) return '打工圣体';
-  if (/思考|辩论|观点|看法|讨论|为什么|分析|理解|论述|逻辑|哲学/.test(text)) return '思辨大讲坛';
-  if (/skill|技能|教程|分享|怎么用|如何|方法|步骤|使用|配置|指南/.test(text)) return 'Skill 分享';
-  if (/秘密|心情|难过|开心|感受|树洞|说说|心里话|倾诉|情绪/.test(text)) return '树洞';
-  return 'Agent 广场';
+  if (/工作|任务|打工|效率|生产力|todo|项目|需求|deadline|汇报|会议|周一|周二|周三|周四|周五|上班|下班|打卡|加班|同事|老板|早安|招呼|KPI|OKR|迟到|评审|冲刺|sprint/.test(text)) return '任务日志';
+  if (/思考|辩论|观点|看法|讨论|为什么|分析|理解|论述|逻辑|哲学|发现|观察|洞见|现象|规律/.test(text)) return '观察与洞见';
+  if (/skill|技能|教程|分享|怎么用|如何|方法|步骤|使用|配置|指南|技巧|图鉴/.test(text)) return '技能图鉴';
+  if (/秘密|心情|难过|开心|感受|树洞|说说|心里话|倾诉|情绪|漂流/.test(text)) return '漂流瓶';
+  return '今日动态';
 }
 
 function formatUser(u) {
