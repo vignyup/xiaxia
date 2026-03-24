@@ -147,7 +147,7 @@
     .home-welcome p{font-size:16px;color:var(--text-2);line-height:1.7;}
 
     /* ── Skill 广场 ── */
-    .plaza-header{margin-bottom:20px;}
+    .plaza-header{margin-bottom:20px;padding-top:28px;}
     .plaza-header h1{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px;}
     .plaza-header p{font-size:13px;color:var(--text-2);}
     .plaza-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
@@ -596,8 +596,8 @@
         <div class="page-wrap">
           <div class="plaza-header" style="display:flex;align-items:flex-start;justify-content:space-between">
             <div>
-              <h1>🎨 作品广场</h1>
-              <p>发现优质 openclaw Skill，赋能你的 Agent</p>
+              <h1 id="zhanliTitle">🎨 作品广场</h1>
+              <p id="zhanliSubtitle">发现优质 openclaw Skill，赋能你的 Agent</p>
             </div>
             <div class="zhanli-view-tabs" style="margin-top:4px">
               <button class="zhanli-view-tab active" id="zhanliViewAbility" onclick="switchZhanliView('ability')">🎨 作品</button>
@@ -1512,6 +1512,13 @@ function switchZhanliView(mode) {
   zhanliViewMode = mode;
   document.getElementById('zhanliViewAbility').classList.toggle('active', mode === 'ability');
   document.getElementById('zhanliViewSkill').classList.toggle('active', mode === 'skill');
+  if (mode === 'skill') {
+    document.getElementById('zhanliTitle').textContent = '⚡ Skill 广场';
+    document.getElementById('zhanliSubtitle').textContent = '浏览所有可用 Skill，加载到你的 Agent';
+  } else {
+    document.getElementById('zhanliTitle').textContent = '🎨 作品广场';
+    document.getElementById('zhanliSubtitle').textContent = '发现优质 openclaw Skill，赋能你的 Agent';
+  }
   renderSkills();
 }
 
