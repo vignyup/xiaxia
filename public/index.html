@@ -1571,7 +1571,7 @@ function renderSkills() {
       const version = s.ability?.version || 'v1.0.0';
       const downloads = (s.likes * 47 + s.id * 313).toLocaleString();
       return `
-      <div class="skill-list-card" onclick="openSkillDetail(${s.id})">
+      <div class="skill-list-card" onclick="openSkillDetail(${s.id},'skill')">
         <div class="skill-list-avatar" style="background:${bgColor}">${letter}</div>
         <div class="skill-list-body">
           <div class="skill-list-title">${s.name}</div>
@@ -1592,7 +1592,7 @@ function renderSkills() {
       const skillCount = ab?.skills?.length || 0;
       const bgColor = s.bg.match(/#[0-9a-fA-F]{6}/g)?.[0] || '#7C3AED';
       return `
-      <div class="ability-card" onclick="openSkillDetail(${s.id})">
+      <div class="ability-card" onclick="openSkillDetail(${s.id},'ability')">
         <div class="ability-card-header">
           <div class="ability-card-icon" style="background:${s.bg}">${s.emoji}</div>
           <div style="flex:1;min-width:0">
@@ -1614,7 +1614,7 @@ function renderSkills() {
     // 作品视图（portrait 卡片）
     grid.className = 'skill-grid';
     grid.innerHTML = list.map(s=>`
-      <div class="skill-card" onclick="openSkillDetail(${s.id})">
+      <div class="skill-card" onclick="openSkillDetail(${s.id},'works')">
         <div class="skill-card-cover" style="background:${s.bg}">${s.emoji}</div>
         <div class="skill-card-info">
           <div class="skill-card-title">${s.name}</div>
@@ -1628,7 +1628,7 @@ function renderSkills() {
   }
 }
 
-function openSkillDetail(id) {
+function openSkillDetail(id, source) {
   const s = SKILLS.find(x => x.id === id);
   if (!s) return;
   document.getElementById('zhanliListView').style.display = 'none';
@@ -1636,71 +1636,124 @@ function openSkillDetail(id) {
   window.scrollTo(0, 0);
   const skillUrl = location.origin + '/skill.md';
   const ab = s.ability;
-  const [mainSkill, ...subSkills] = ab?.skills || [];
+
+  // ── 左侧内容 ──
+  const compactHeader = `
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
+      <div style="width:52px;height:52px;border-radius:14px;background:${s.bg};display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">${s.emoji}</div>
+      <div>
+        <div style="font-size:20px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--text)">${s.name}</div>
+        <div style="font-size:12px;color:var(--text-3);margin-top:3px">${s.cat} · ${s.tags.map(t=>`<span style="background:var(--hover-bg);padding:1px 7px;border-radius:10px;margin-right:4px">${t}</span>`).join('')}</div>
+      </div>
+    </div>`;
+
+  const worksLeft = `
+    <div class="zd-big-title">${s.name}</div>
+    <div class="zd-cover" style="background:${s.bg}">${s.emoji}</div>
+    <div class="zd-article">
+      <h2>关于这个作品</h2>
+      <p>${s.desc}</p>
+      <h2>适用场景</h2>
+      <p>标签：${s.tags.map(t=>`<strong>${t}</strong>`).join('、')}。适合需要在 ${s.cat} 领域快速完成任务的 Agent。</p>
+    </div>`;
+
+  const skillLeft = `
+    ${compactHeader}
+    <div class="zd-article">
+      <h2>Skill 说明</h2>
+      <p>${s.desc}</p>
+      <h2>使用方式</h2>
+      <p>在 openclaw 中加载此 Skill URL，Agent 即可获得该能力。每个 Skill 只处理一项具体任务。</p>
+    </div>`;
+
+  const abilityLeft = `
+    ${compactHeader}
+    <div class="zd-article">
+      <h2>Ability 说明</h2>
+      <p>${ab?.purpose || s.desc}</p>
+      <h2>包含的 Skills</h2>
+      ${ab?.skills?.length ? `<ul>${ab.skills.map((sk,i)=>`<li><code>${sk.file}</code>${i===0?' <strong>（总调度）</strong>':''} — ${sk.desc}</li>`).join('')}</ul>` : `<p>${s.desc}</p>`}
+      <h2>使用方式</h2>
+      <p>加载 Ability URL 后，总调度 skill 自动编排其余子 skill 完成完整任务流程。</p>
+    </div>`;
+
+  // ── 右侧面板 ──
+  const abilityPanel = `
+    <div class="zd-panel-card">
+      <div class="zd-author-row">
+        <div class="zd-author-avatar" style="background:${s.bg}">${s.emoji}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <div class="zd-author-name">${ab?.name || s.name}</div>
+            <span style="font-size:11px;background:var(--bg-3);color:var(--text-3);padding:2px 7px;border-radius:10px;font-family:monospace">v${ab?.version || '1.0.0'}</span>
+          </div>
+          <div style="font-size:12px;color:var(--text-3);margin-top:2px">${s.cat} · 🔥 ${s.likes} 次使用</div>
+        </div>
+      </div>
+      <div class="zd-panel-label">Ability 作用</div>
+      <div class="zd-panel-text">${ab?.purpose || s.desc}</div>
+      ${ab?.skills?.length ? (() => {
+        const [main, ...subs] = ab.skills;
+        return `
+      <div class="zd-panel-label" style="margin-top:14px">🎯 总调度</div>
+      <div class="zd-plugin-list">
+        <div class="zd-plugin-item zd-plugin-main">
+          <span class="zd-plugin-file">${main.file}</span>
+          <span class="zd-plugin-desc">${main.desc}</span>
+        </div>
+      </div>
+      ${subs.length ? `
+      <div class="zd-panel-label" style="margin-top:14px">⚙️ 执行 Skills</div>
+      <div class="zd-plugin-list">
+        ${subs.map(sk=>`<div class="zd-plugin-item"><span class="zd-plugin-file">${sk.file}</span><span class="zd-plugin-desc">${sk.desc}</span></div>`).join('')}
+      </div>` : ''}`;
+      })() : ''}
+      <div style="margin-top:16px">
+        <button class="zd-install-btn" onclick="copySkillUrl('${skillUrl}', this)">📋 复制 Ability URL</button>
+      </div>
+      <div class="zd-actions" style="margin-top:12px">
+        <div class="zd-act"><span class="ai">🔥</span><span>${s.likes}</span></div>
+        <div class="zd-act"><span class="ai">🔖</span><span>收藏</span></div>
+        <div class="zd-act"><span class="ai">↗️</span><span>分享</span></div>
+      </div>
+    </div>`;
+
+  const skillPanel = `
+    <div class="zd-panel-card">
+      <div class="zd-author-row">
+        <div class="zd-author-avatar" style="background:${s.bg}">${s.emoji}</div>
+        <div>
+          <div class="zd-author-name">${s.name}</div>
+          <div style="font-size:12px;color:var(--text-3);margin-top:2px">${s.cat} · 🔥 ${s.likes} 次使用</div>
+        </div>
+      </div>
+      <div class="zd-panel-label">Skill 说明</div>
+      <div class="zd-panel-text">${s.desc}</div>
+      <div class="zd-panel-label" style="margin-top:14px">📄 入口文件</div>
+      <div class="zd-plugin-list">
+        <div class="zd-plugin-item zd-plugin-main">
+          <span class="zd-plugin-file">skill.md</span>
+          <span class="zd-plugin-desc">${ab?.skills?.[0]?.desc || '核心能力定义文件'}</span>
+        </div>
+      </div>
+      <div style="margin-top:16px">
+        <button class="zd-install-btn" onclick="copySkillUrl('${skillUrl}', this)">📋 复制 Skill URL</button>
+      </div>
+      <div class="zd-actions" style="margin-top:12px">
+        <div class="zd-act"><span class="ai">🔥</span><span>${s.likes}</span></div>
+        <div class="zd-act"><span class="ai">🔖</span><span>收藏</span></div>
+        <div class="zd-act"><span class="ai">↗️</span><span>分享</span></div>
+      </div>
+    </div>`;
+
+  const leftCol  = source === 'works' ? worksLeft : source === 'skill' ? skillLeft : abilityLeft;
+  const rightCol = source === 'skill' ? skillPanel : abilityPanel;
+
   document.getElementById('zhanliDetailContent').innerHTML = `
     <div class="zd-back" onclick="backToZhanli()">← 返回</div>
     <div class="zd-layout">
-      <div>
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
-          <div style="width:52px;height:52px;border-radius:14px;background:${s.bg};display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">${s.emoji}</div>
-          <div>
-            <div style="font-size:20px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--text)">${s.name}</div>
-            <div style="font-size:12px;color:var(--text-3);margin-top:3px">${s.cat} · ${s.tags.map(t=>`<span style="background:var(--hover-bg);padding:1px 7px;border-radius:10px;margin-right:4px">${t}</span>`).join('')}</div>
-          </div>
-        </div>
-        <div class="zd-article">
-          <h2>Skill 说明</h2>
-          <p>${s.desc}</p>
-          ${mainSkill ? `<h2>总调度：${mainSkill.file}</h2><p>${mainSkill.desc}</p>` : ''}
-          ${subSkills.length ? `<h2>执行 Skills</h2><ul>${subSkills.map(sk=>`<li><code>${sk.file}</code> — ${sk.desc}</li>`).join('')}</ul>` : ''}
-          <h2>使用方式</h2>
-          <p>通过 openclaw 平台加载 Skill URL，在 Agent 配置中引入即可。总调度 skill 会自动编排子 skill 完成任务。</p>
-        </div>
-      </div>
-      <div>
-        <div class="zd-panel-card">
-          <div class="zd-author-row">
-            <div class="zd-author-avatar" style="background:${s.bg}">${s.emoji}</div>
-            <div style="flex:1;min-width:0">
-              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                <div class="zd-author-name">${s.ability.name}</div>
-                <span style="font-size:11px;background:var(--bg-3);color:var(--text-3);padding:2px 7px;border-radius:10px;font-family:monospace">v${s.ability.version}</span>
-              </div>
-              <div style="font-size:12px;color:var(--text-3);margin-top:2px">${s.cat} · 🔥 ${s.likes} 次使用</div>
-            </div>
-          </div>
-          <div class="zd-panel-label">Ability 作用</div>
-          <div class="zd-panel-text">${s.ability.purpose}</div>
-          ${s.ability.skills && s.ability.skills.length ? (() => {
-            const [main, ...subs] = s.ability.skills;
-            return `
-          <div class="zd-panel-label" style="margin-top:14px">🎯 总调度</div>
-          <div class="zd-plugin-list">
-            <div class="zd-plugin-item zd-plugin-main">
-              <span class="zd-plugin-file">${main.file}</span>
-              <span class="zd-plugin-desc">${main.desc}</span>
-            </div>
-          </div>
-          ${subs.length ? `
-          <div class="zd-panel-label" style="margin-top:14px">⚙️ 执行 Skills</div>
-          <div class="zd-plugin-list">
-            ${subs.map(sk=>`
-            <div class="zd-plugin-item">
-              <span class="zd-plugin-file">${sk.file}</span>
-              <span class="zd-plugin-desc">${sk.desc}</span>
-            </div>`).join('')}
-          </div>` : ''}`;
-          })() : ''}
-          <div style="margin-top:16px">
-            <button class="zd-install-btn" onclick="copySkillUrl('${skillUrl}', this)">📋 复制 Ability URL</button>
-          </div>
-          <div class="zd-actions" style="margin-top:12px">
-            <div class="zd-act"><span class="ai">🔥</span><span>${s.likes}</span></div>
-            <div class="zd-act"><span class="ai">🔖</span><span>收藏</span></div>
-            <div class="zd-act"><span class="ai">↗️</span><span>分享</span></div>
-          </div>
-        </div>
-      </div>
+      <div>${leftCol}</div>
+      <div>${rightCol}</div>
     </div>`;
 }
 
