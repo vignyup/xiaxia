@@ -192,6 +192,10 @@
     .zd-install-btn:hover{background:#333;}
     .zd-comment-ph{text-align:center;padding:20px 0;color:var(--text-3);}
     .zd-agent-bar{display:flex;align-items:center;gap:8px;background:var(--hover-bg);border-radius:8px;padding:8px 12px;margin-bottom:12px;}
+    .zd-plugin-list{display:flex;flex-direction:column;gap:6px;}
+    .zd-plugin-item{display:flex;flex-direction:column;gap:2px;background:var(--hover-bg);border-radius:7px;padding:7px 10px;}
+    .zd-plugin-file{font-size:12px;font-weight:600;font-family:monospace;color:var(--text-1);}
+    .zd-plugin-desc{font-size:11.5px;color:var(--text-3);line-height:1.4;}
     .zd-agent-label{font-size:11px;font-weight:700;color:var(--text-3);white-space:nowrap;}
     .zd-agent-url{flex:1;font-size:11px;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace;}
     .zd-actions{display:flex;justify-content:space-around;padding:12px 0;border-top:1px solid var(--border);}
@@ -1397,23 +1401,91 @@ function switchView(view) {
 
 /* ══ Skill 广场 ══ */
 const SKILLS = [
-  {id:1, emoji:'🎨',bg:'linear-gradient(135deg,#7C3AED,#A78BFA)',name:'ui-ux-pro-max',desc:'UI/UX 设计智能助手，输出高保真设计方案、组件规范、Design Token，支持 React/Vue/Tailwind。',tags:['设计','前端','Tailwind'],likes:312,date:'2026-01-10',cat:'办公'},
-  {id:2, emoji:'🔍',bg:'linear-gradient(135deg,#0EA5E9,#06B6D4)',name:'web-researcher',desc:'自动搜索、摘要、整理网络信息，支持多源聚合与可信度评估，输出结构化报告。',tags:['搜索','研究','信息'],likes:278,date:'2026-01-15',cat:'办公'},
-  {id:3, emoji:'🐍',bg:'linear-gradient(135deg,#059669,#10B981)',name:'python-coder',desc:'专业 Python 编程助手，擅长数据处理、自动化脚本、API 集成，附单测生成。',tags:['Python','编程','自动化'],likes:245,date:'2026-01-20',cat:'办公'},
-  {id:4, emoji:'📊',bg:'linear-gradient(135deg,#F59E0B,#FBBF24)',name:'data-analyst',desc:'数据分析与可视化专家，支持 SQL/Pandas/Matplotlib，自动生成洞察报告。',tags:['数据','SQL','可视化'],likes:198,date:'2026-01-22',cat:'数据分析'},
-  {id:5, emoji:'✍️',bg:'linear-gradient(135deg,#EC4899,#F472B6)',name:'content-writer',desc:'高质量中英文内容创作，涵盖营销文案、技术博客、社媒内容，SEO 友好。',tags:['写作','内容','营销'],likes:176,date:'2026-02-01',cat:'办公'},
-  {id:6, emoji:'🛡️',bg:'linear-gradient(135deg,#1E293B,#475569)',name:'code-reviewer',desc:'代码审查专家，检测安全漏洞、性能瓶颈、代码规范问题，给出可执行改进建议。',tags:['安全','代码质量','审查'],likes:154,date:'2026-02-05',cat:'办公'},
-  {id:7, emoji:'📦',bg:'linear-gradient(135deg,#7C2D12,#B45309)',name:'product-manager',desc:'产品需求分析与文档撰写，生成 PRD、用户故事、优先级矩阵，助力产品决策。',tags:['产品','PRD','需求'],likes:132,date:'2026-02-10',cat:'办公'},
-  {id:8, emoji:'🌐',bg:'linear-gradient(135deg,#1E40AF,#3B82F6)',name:'translator-pro',desc:'多语言翻译与本地化专家，支持 50+ 语言，保持语境一致性与文化适配。',tags:['翻译','多语言','本地化'],likes:118,date:'2026-02-14',cat:'办公'},
-  {id:9, emoji:'📈',bg:'linear-gradient(135deg,#0F766E,#14B8A6)',name:'market-researcher',desc:'市场调研与竞品分析，输出 SWOT、波特五力、TAM 测算等专业框架报告。',tags:['市场','竞品','分析'],likes:97,date:'2026-02-18',cat:'数据分析'},
-  {id:10,emoji:'🤖',bg:'linear-gradient(135deg,#6D28D9,#8B5CF6)',name:'agent-builder',desc:'帮助你设计和构建 openclaw Agent，生成 skill.md、配置文件、注册流程文档。',tags:['Agent','openclaw','构建'],likes:88,date:'2026-03-01',cat:'其他'},
-  {id:11,emoji:'💰',bg:'linear-gradient(135deg,#D97706,#F59E0B)',name:'stock-analyst',desc:'A股/港股/美股行情解读，技术面+基本面双维分析，帮你看懂财报和研报。',tags:['股票','财报','投资'],likes:203,date:'2026-02-08',cat:'理财'},
-  {id:12,emoji:'🏦',bg:'linear-gradient(135deg,#065F46,#059669)',name:'fund-advisor',desc:'基金筛选与配置顾问，分析风险收益比，给出适合你的基金组合建议。',tags:['基金','理财','配置'],likes:167,date:'2026-02-20',cat:'理财'},
-  {id:13,emoji:'📒',bg:'linear-gradient(135deg,#7C3AED,#6366F1)',name:'budget-keeper',desc:'个人记账与收支分析，自动分类支出，生成月度财务健康报告和储蓄建议。',tags:['记账','预算','财务'],likes:134,date:'2026-03-05',cat:'理财'},
-  {id:14,emoji:'🍜',bg:'linear-gradient(135deg,#DC2626,#F97316)',name:'foodie-guide',desc:'美食推荐专家，根据口味、地点和预算推荐餐厅、菜谱和特色小吃攻略。',tags:['美食','餐厅','菜谱'],likes:221,date:'2026-02-12',cat:'吃喝玩乐'},
-  {id:15,emoji:'✈️',bg:'linear-gradient(135deg,#0369A1,#0EA5E9)',name:'travel-planner',desc:'旅行行程规划师，定制出行路线、景点推荐、住宿攻略，含预算估算。',tags:['旅行','攻略','出行'],likes:189,date:'2026-02-25',cat:'吃喝玩乐'},
-  {id:16,emoji:'🎮',bg:'linear-gradient(135deg,#4F46E5,#7C3AED)',name:'game-master',desc:'游戏攻略百科，覆盖主机/PC/手游，提供通关技巧、隐藏彩蛋和氪金性价比分析。',tags:['游戏','攻略','娱乐'],likes:156,date:'2026-03-08',cat:'吃喝玩乐'},
-  {id:17,emoji:'🔬',bg:'linear-gradient(135deg,#0F766E,#06B6D4)',name:'bi-reporter',desc:'商业智能报告生成器，连接数据源后自动生成周报/月报，支持图表和趋势解读。',tags:['BI','报表','自动化'],likes:112,date:'2026-03-10',cat:'数据分析'},
+  {id:1, emoji:'🎨',bg:'linear-gradient(135deg,#7C3AED,#A78BFA)',name:'ui-ux-pro-max',desc:'UI/UX 设计智能助手，输出高保真设计方案、组件规范、Design Token，支持 React/Vue/Tailwind。',tags:['设计','前端','Tailwind'],likes:312,date:'2026-01-10',cat:'办公',
+    plugin:{name:'ui-ux-pro-max',version:'1.2.0',purpose:'让 Agent 具备完整的 UI/UX 设计能力，从需求分析到交付物一站式输出。',
+      skills:[{file:'skill.md',desc:'核心设计能力：组件规范、Design Token、响应式布局'},{file:'figma-export.md',desc:'Figma 文件解析与资产导出'}],
+      mcps:[{name:'browser-mcp',desc:'抓取竞品网站截图做参考分析'},{name:'figma-mcp',desc:'直接读写 Figma 文件'}],
+      files:[{file:'design-principles.md',desc:'设计决策规则与风格指南'},{file:'component-library.md',desc:'内置组件库索引'}]}},
+  {id:2, emoji:'🔍',bg:'linear-gradient(135deg,#0EA5E9,#06B6D4)',name:'web-researcher',desc:'自动搜索、摘要、整理网络信息，支持多源聚合与可信度评估，输出结构化报告。',tags:['搜索','研究','信息'],likes:278,date:'2026-01-15',cat:'办公',
+    plugin:{name:'web-researcher',version:'2.0.1',purpose:'给 Agent 配备完整的网络调研能力，多源聚合、去重、可信度打分，最终输出结构化报告。',
+      skills:[{file:'skill.md',desc:'搜索、摘要、整理的核心指令集'},{file:'report-format.md',desc:'报告输出格式规范'}],
+      mcps:[{name:'search-mcp',desc:'调用多个搜索引擎并聚合结果'},{name:'reader-mcp',desc:'全文抓取网页正文内容'}],
+      files:[{file:'credibility-rules.md',desc:'可信度评估规则'},{file:'heartbeat.md',desc:'定时触发调研任务的心跳配置'}]}},
+  {id:3, emoji:'🐍',bg:'linear-gradient(135deg,#059669,#10B981)',name:'python-coder',desc:'专业 Python 编程助手，擅长数据处理、自动化脚本、API 集成，附单测生成。',tags:['Python','编程','自动化'],likes:245,date:'2026-01-20',cat:'办公',
+    plugin:{name:'python-coder',version:'1.5.3',purpose:'让 Agent 能独立完成 Python 开发任务，从写代码到跑测试全流程覆盖。',
+      skills:[{file:'skill.md',desc:'Python 编程核心能力'},{file:'test-gen.md',desc:'单元测试自动生成规范'}],
+      mcps:[{name:'shell-mcp',desc:'在沙盒中执行 Python 脚本并返回结果'},{name:'github-mcp',desc:'读写 GitHub 仓库代码'}],
+      files:[{file:'code-style.md',desc:'PEP8 + 项目风格约定'},{file:'dependency-rules.md',desc:'依赖管理与版本锁定规则'}]}},
+  {id:4, emoji:'📊',bg:'linear-gradient(135deg,#F59E0B,#FBBF24)',name:'data-analyst',desc:'数据分析与可视化专家，支持 SQL/Pandas/Matplotlib，自动生成洞察报告。',tags:['数据','SQL','可视化'],likes:198,date:'2026-01-22',cat:'数据分析',
+    plugin:{name:'data-analyst',version:'1.3.0',purpose:'让 Agent 能连接数据源、跑分析、出图表，最终生成可读的洞察报告。',
+      skills:[{file:'skill.md',desc:'SQL 查询、Pandas 分析、图表生成'},{file:'insight-format.md',desc:'洞察报告输出结构'}],
+      mcps:[{name:'postgres-mcp',desc:'连接 PostgreSQL 数据库执行查询'},{name:'shell-mcp',desc:'运行 Python 数据分析脚本'}],
+      files:[{file:'chart-templates.md',desc:'常用图表类型与选用规则'},{file:'kpi-dict.md',desc:'业务指标定义字典'}]}},
+  {id:5, emoji:'✍️',bg:'linear-gradient(135deg,#EC4899,#F472B6)',name:'content-ops',desc:'内容运营全链路能力包，覆盖选题、创作、发布、互动、数据复盘，支持多平台协同。',tags:['内容运营','社媒','自动化'],likes:176,date:'2026-02-01',cat:'办公',
+    plugin:{name:'content-ops',version:'1.0.0',purpose:'让 Agent 具备完整的内容运营 ability：从选题策划到发布互动，按心跳节奏自动运转。',
+      skills:[{file:'skill.md',desc:'内容创作核心指令：选题、撰写、排版'},{file:'publish.md',desc:'多平台发布规范与格式要求'},{file:'engage.md',desc:'评论回复、互动增长策略'}],
+      mcps:[{name:'browser-mcp',desc:'操控浏览器发布内容到微信/微博/小红书'},{name:'search-mcp',desc:'热点追踪与选题灵感来源'},{name:'analytics-mcp',desc:'读取平台数据，统计阅读/互动指标'}],
+      files:[{file:'heartbeat.md',desc:'每日运营心跳：几点选题、几点发布、几点复盘'},{file:'tone-guide.md',desc:'品牌语气与风格约定'},{file:'topic-rules.md',desc:'选题判断规则：什么值得写、什么要避开'}]}},
+  {id:6, emoji:'🛡️',bg:'linear-gradient(135deg,#1E293B,#475569)',name:'code-reviewer',desc:'代码审查专家，检测安全漏洞、性能瓶颈、代码规范问题，给出可执行改进建议。',tags:['安全','代码质量','审查'],likes:154,date:'2026-02-05',cat:'办公',
+    plugin:{name:'code-reviewer',version:'1.1.0',purpose:'让 Agent 在 PR 合并前自动做安全扫描和质量审查，输出可执行的改进清单。',
+      skills:[{file:'skill.md',desc:'代码审查核心规则集'},{file:'security-checks.md',desc:'OWASP Top10 安全检查清单'}],
+      mcps:[{name:'github-mcp',desc:'读取 PR diff 和代码文件'},{name:'shell-mcp',desc:'运行静态分析工具'}],
+      files:[{file:'review-template.md',desc:'审查报告输出模板'},{file:'ignore-rules.md',desc:'误报白名单规则'}]}},
+  {id:7, emoji:'📦',bg:'linear-gradient(135deg,#7C2D12,#B45309)',name:'product-manager',desc:'产品需求分析与文档撰写，生成 PRD、用户故事、优先级矩阵，助力产品决策。',tags:['产品','PRD','需求'],likes:132,date:'2026-02-10',cat:'办公',
+    plugin:{name:'product-manager',version:'1.0.2',purpose:'让 Agent 能从用户反馈中提炼需求、输出 PRD、排优先级，辅助产品决策全流程。',
+      skills:[{file:'skill.md',desc:'需求分析与 PRD 撰写'},{file:'prioritize.md',desc:'优先级矩阵生成规则'}],
+      mcps:[{name:'notion-mcp',desc:'读写 Notion 中的需求文档'},{name:'search-mcp',desc:'竞品功能调研'}],
+      files:[{file:'prd-template.md',desc:'PRD 标准模板'},{file:'user-story-format.md',desc:'用户故事书写规范'}]}},
+  {id:8, emoji:'🌐',bg:'linear-gradient(135deg,#1E40AF,#3B82F6)',name:'translator-pro',desc:'多语言翻译与本地化专家，支持 50+ 语言，保持语境一致性与文化适配。',tags:['翻译','多语言','本地化'],likes:118,date:'2026-02-14',cat:'办公',
+    plugin:{name:'translator-pro',version:'1.4.0',purpose:'让 Agent 处理多语言翻译任务，保证术语一致性与文化适配，支持批量文档本地化。',
+      skills:[{file:'skill.md',desc:'翻译核心能力与语言规则'},{file:'localize.md',desc:'本地化适配指南'}],
+      mcps:[{name:'reader-mcp',desc:'读取文档文件内容'},{name:'shell-mcp',desc:'批量处理翻译文件'}],
+      files:[{file:'glossary.md',desc:'术语表：保证跨文档一致性'},{file:'cultural-rules.md',desc:'各语言文化禁忌与表达习惯'}]}},
+  {id:9, emoji:'📈',bg:'linear-gradient(135deg,#0F766E,#14B8A6)',name:'market-researcher',desc:'市场调研与竞品分析，输出 SWOT、波特五力、TAM 测算等专业框架报告。',tags:['市场','竞品','分析'],likes:97,date:'2026-02-18',cat:'数据分析',
+    plugin:{name:'market-researcher',version:'1.0.1',purpose:'让 Agent 能独立完成市场调研任务，从数据收集到框架分析全流程输出。',
+      skills:[{file:'skill.md',desc:'市场调研与竞品分析核心能力'},{file:'frameworks.md',desc:'SWOT/波特五力/TAM 分析框架'}],
+      mcps:[{name:'search-mcp',desc:'搜集行业数据与竞品信息'},{name:'reader-mcp',desc:'抓取研报与新闻全文'}],
+      files:[{file:'report-template.md',desc:'市场调研报告模板'},{file:'data-sources.md',desc:'可信数据源索引'}]}},
+  {id:10,emoji:'🤖',bg:'linear-gradient(135deg,#6D28D9,#8B5CF6)',name:'agent-builder',desc:'帮助你设计和构建 openclaw Agent，生成 skill.md、配置文件、注册流程文档。',tags:['Agent','openclaw','构建'],likes:88,date:'2026-03-01',cat:'其他',
+    plugin:{name:'agent-builder',version:'2.0.0',purpose:'让 Agent 能帮你设计另一个 Agent，生成完整的 plugin 包结构，包括 skill、MCP 配置和心跳流程。',
+      skills:[{file:'skill.md',desc:'Agent 设计与文档生成核心能力'},{file:'plugin-scaffold.md',desc:'Plugin 包脚手架生成规范'}],
+      mcps:[{name:'shell-mcp',desc:'生成并写入 plugin 目录结构'},{name:'github-mcp',desc:'发布 plugin 到 GitHub'}],
+      files:[{file:'plugin-template.md',desc:'标准 Plugin 包目录模板'},{file:'skill-template.md',desc:'skill.md 撰写规范与示例'}]}},
+  {id:11,emoji:'💰',bg:'linear-gradient(135deg,#D97706,#F59E0B)',name:'stock-analyst',desc:'A股/港股/美股行情解读，技术面+基本面双维分析，帮你看懂财报和研报。',tags:['股票','财报','投资'],likes:203,date:'2026-02-08',cat:'理财',
+    plugin:{name:'stock-analyst',version:'1.2.1',purpose:'让 Agent 能实时追踪行情、解读财报、生成投资参考报告，覆盖 A/港/美三地市场。',
+      skills:[{file:'skill.md',desc:'行情解读与财报分析核心能力'},{file:'technical.md',desc:'技术面指标：MA、MACD、RSI 解读规则'}],
+      mcps:[{name:'finance-mcp',desc:'获取实时股价与财务数据'},{name:'search-mcp',desc:'抓取研报与新闻'}],
+      files:[{file:'risk-disclaimer.md',desc:'风险提示规范（合规必备）'},{file:'report-template.md',desc:'投资分析报告模板'}]}},
+  {id:12,emoji:'🏦',bg:'linear-gradient(135deg,#065F46,#059669)',name:'fund-advisor',desc:'基金筛选与配置顾问，分析风险收益比，给出适合你的基金组合建议。',tags:['基金','理财','配置'],likes:167,date:'2026-02-20',cat:'理财',
+    plugin:{name:'fund-advisor',version:'1.1.0',purpose:'让 Agent 根据用户风险偏好和投资目标，筛选基金并给出组合配置建议。',
+      skills:[{file:'skill.md',desc:'基金筛选与配置核心能力'},{file:'risk-profile.md',desc:'用户风险画像评估规则'}],
+      mcps:[{name:'finance-mcp',desc:'获取基金净值、历史收益数据'},{name:'search-mcp',desc:'抓取基金经理背景与持仓信息'}],
+      files:[{file:'allocation-rules.md',desc:'资产配置比例规则'},{file:'risk-disclaimer.md',desc:'理财风险提示规范'}]}},
+  {id:13,emoji:'📒',bg:'linear-gradient(135deg,#7C3AED,#6366F1)',name:'budget-keeper',desc:'个人记账与收支分析，自动分类支出，生成月度财务健康报告和储蓄建议。',tags:['记账','预算','财务'],likes:134,date:'2026-03-05',cat:'理财',
+    plugin:{name:'budget-keeper',version:'1.0.3',purpose:'让 Agent 帮用户追踪收支、自动分类、月度复盘，养成健康的财务习惯。',
+      skills:[{file:'skill.md',desc:'记账与收支分析核心能力'},{file:'categorize.md',desc:'支出自动分类规则'}],
+      mcps:[{name:'notion-mcp',desc:'读写 Notion 账本'},{name:'shell-mcp',desc:'生成收支图表'}],
+      files:[{file:'report-template.md',desc:'月度财务健康报告模板'},{file:'saving-rules.md',desc:'储蓄建议生成规则'}]}},
+  {id:14,emoji:'🍜',bg:'linear-gradient(135deg,#DC2626,#F97316)',name:'foodie-guide',desc:'美食推荐专家，根据口味、地点和预算推荐餐厅、菜谱和特色小吃攻略。',tags:['美食','餐厅','菜谱'],likes:221,date:'2026-02-12',cat:'吃喝玩乐',
+    plugin:{name:'foodie-guide',version:'1.0.0',purpose:'让 Agent 成为美食顾问，根据用户偏好推荐餐厅、菜谱和吃喝路线。',
+      skills:[{file:'skill.md',desc:'美食推荐核心能力'},{file:'recipe.md',desc:'菜谱生成与食材替换规则'}],
+      mcps:[{name:'search-mcp',desc:'搜索大众点评/美团餐厅信息'},{name:'maps-mcp',desc:'获取附近餐厅位置与营业状态'}],
+      files:[{file:'preference-model.md',desc:'口味偏好建模规则'},{file:'diet-rules.md',desc:'饮食禁忌与过敏原处理'}]}},
+  {id:15,emoji:'✈️',bg:'linear-gradient(135deg,#0369A1,#0EA5E9)',name:'travel-planner',desc:'旅行行程规划师，定制出行路线、景点推荐、住宿攻略，含预算估算。',tags:['旅行','攻略','出行'],likes:189,date:'2026-02-25',cat:'吃喝玩乐',
+    plugin:{name:'travel-planner',version:'1.3.0',purpose:'让 Agent 规划完整旅行方案，从交通到住宿到每日行程，含实时信息与预算控制。',
+      skills:[{file:'skill.md',desc:'行程规划核心能力'},{file:'booking.md',desc:'机票/酒店预订流程指引'}],
+      mcps:[{name:'search-mcp',desc:'搜索景点、攻略、用户评价'},{name:'maps-mcp',desc:'路线规划与交通时间估算'},{name:'browser-mcp',desc:'查询实时票价与库存'}],
+      files:[{file:'itinerary-template.md',desc:'行程单输出模板'},{file:'budget-rules.md',desc:'预算分配与性价比规则'}]}},
+  {id:16,emoji:'🎮',bg:'linear-gradient(135deg,#4F46E5,#7C3AED)',name:'game-master',desc:'游戏攻略百科，覆盖主机/PC/手游，提供通关技巧、隐藏彩蛋和氪金性价比分析。',tags:['游戏','攻略','娱乐'],likes:156,date:'2026-03-08',cat:'吃喝玩乐',
+    plugin:{name:'game-master',version:'1.1.0',purpose:'让 Agent 成为全平台游戏顾问，提供攻略、build 推荐和性价比分析。',
+      skills:[{file:'skill.md',desc:'游戏攻略与分析核心能力'},{file:'gacha.md',desc:'手游抽卡性价比分析规则'}],
+      mcps:[{name:'search-mcp',desc:'搜索 Wiki、论坛、B站攻略视频'},{name:'browser-mcp',desc:'抓取游戏官网公告与版本更新'}],
+      files:[{file:'game-index.md',desc:'已收录游戏索引与更新时间'},{file:'meta-rules.md',desc:'当前版本强势阵容判断规则'}]}},
+  {id:17,emoji:'🔬',bg:'linear-gradient(135deg,#0F766E,#06B6D4)',name:'bi-reporter',desc:'商业智能报告生成器，连接数据源后自动生成周报/月报，支持图表和趋势解读。',tags:['BI','报表','自动化'],likes:112,date:'2026-03-10',cat:'数据分析',
+    plugin:{name:'bi-reporter',version:'1.0.0',purpose:'让 Agent 自动拉取数据、生成图表、撰写趋势分析，定时输出周报/月报。',
+      skills:[{file:'skill.md',desc:'BI 报告生成核心能力'},{file:'trend-analysis.md',desc:'趋势判断与异常检测规则'}],
+      mcps:[{name:'postgres-mcp',desc:'连接数据仓库执行聚合查询'},{name:'shell-mcp',desc:'用 Python/Matplotlib 生成图表'}],
+      files:[{file:'report-template.md',desc:'周报/月报标准模板'},{file:'heartbeat.md',desc:'定时触发报告生成的心跳配置'},{file:'metric-dict.md',desc:'业务指标定义与计算口径'}]}},
 ];
 
 function sortSkills(s) {
@@ -1480,33 +1552,47 @@ function openSkillDetail(id) {
         <div class="zd-panel-card">
           <div class="zd-author-row">
             <div class="zd-author-avatar" style="background:${s.bg}">${s.emoji}</div>
-            <div>
-              <div class="zd-author-name">${s.name}</div>
-              <div style="font-size:12px;color:var(--text-3)">${s.cat} · 🔥 ${s.likes} 次使用</div>
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <div class="zd-author-name">${s.plugin.name}</div>
+                <span style="font-size:11px;background:var(--bg-3);color:var(--text-3);padding:2px 7px;border-radius:10px;font-family:monospace">v${s.plugin.version}</span>
+              </div>
+              <div style="font-size:12px;color:var(--text-3);margin-top:2px">${s.cat} · 🔥 ${s.likes} 次使用</div>
             </div>
           </div>
-          <div class="zd-panel-label">Skill 说明</div>
-          <div class="zd-panel-text">${s.desc}</div>
-          <div class="zd-install-card">
-            <div class="zd-install-top">
-              <div class="zd-install-icon" style="background:${s.bg}">${s.emoji}</div>
-              <div style="flex:1;min-width:0">
-                <div class="zd-install-name">${s.name}</div>
-                <div class="zd-install-desc">${s.desc}</div>
-              </div>
-            </div>
-            <div class="zd-install-stats">
-              <span>🏷️ ${s.tags.slice(0,2).join(' · ')}</span>
-              <span>📅 ${s.date}</span>
-            </div>
+          <div class="zd-panel-label">Plugin 作用</div>
+          <div class="zd-panel-text">${s.plugin.purpose}</div>
+          ${s.plugin.skills && s.plugin.skills.length ? `
+          <div class="zd-panel-label" style="margin-top:14px">📄 Skills</div>
+          <div class="zd-plugin-list">
+            ${s.plugin.skills.map(sk=>`
+            <div class="zd-plugin-item">
+              <span class="zd-plugin-file">${sk.file}</span>
+              <span class="zd-plugin-desc">${sk.desc}</span>
+            </div>`).join('')}
+          </div>` : ''}
+          ${s.plugin.mcps && s.plugin.mcps.length ? `
+          <div class="zd-panel-label" style="margin-top:14px">🔌 MCP Servers</div>
+          <div class="zd-plugin-list">
+            ${s.plugin.mcps.map(m=>`
+            <div class="zd-plugin-item">
+              <span class="zd-plugin-file">${m.name}</span>
+              <span class="zd-plugin-desc">${m.desc}</span>
+            </div>`).join('')}
+          </div>` : ''}
+          ${s.plugin.files && s.plugin.files.length ? `
+          <div class="zd-panel-label" style="margin-top:14px">📁 其他文件</div>
+          <div class="zd-plugin-list">
+            ${s.plugin.files.map(f=>`
+            <div class="zd-plugin-item">
+              <span class="zd-plugin-file">${f.file}</span>
+              <span class="zd-plugin-desc">${f.desc}</span>
+            </div>`).join('')}
+          </div>` : ''}
+          <div style="margin-top:16px">
             <button class="zd-install-btn" onclick="copySkillUrl('${skillUrl}', this)">📋 复制 Skill URL</button>
           </div>
-          <div class="zd-comment-ph">💬 评论功能即将上线</div>
-          <div class="zd-agent-bar">
-            <span class="zd-agent-label">SKILL URL</span>
-            <span class="zd-agent-url">${skillUrl}</span>
-          </div>
-          <div class="zd-actions">
+          <div class="zd-actions" style="margin-top:12px">
             <div class="zd-act"><span class="ai">🔥</span><span>${s.likes}</span></div>
             <div class="zd-act"><span class="ai">🔖</span><span>收藏</span></div>
             <div class="zd-act"><span class="ai">↗️</span><span>分享</span></div>
