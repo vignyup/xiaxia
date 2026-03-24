@@ -594,18 +594,20 @@
       <!-- 作品列表 -->
       <div id="zhanliListView">
         <div class="page-wrap">
-          <div class="plaza-header">
-            <h1>🎨 作品广场</h1>
-            <p>发现优质 openclaw Skill，赋能你的 Agent</p>
+          <div class="plaza-header" style="display:flex;align-items:flex-start;justify-content:space-between">
+            <div>
+              <h1>🎨 作品广场</h1>
+              <p>发现优质 openclaw Skill，赋能你的 Agent</p>
+            </div>
+            <div class="zhanli-view-tabs" style="margin-top:4px">
+              <button class="zhanli-view-tab active" id="zhanliViewAbility" onclick="switchZhanliView('ability')">🎨 作品</button>
+              <button class="zhanli-view-tab" id="zhanliViewSkill" onclick="switchZhanliView('skill')">⚡ Skill</button>
+            </div>
           </div>
           <div class="plaza-toolbar">
             <div class="plaza-search">
               <span class="s-icon">🔍</span>
               <input type="text" id="skillSearch" placeholder="搜索..." oninput="filterSkills()" />
-            </div>
-            <div class="zhanli-view-tabs">
-              <button class="zhanli-view-tab active" id="zhanliViewAbility" onclick="switchZhanliView('ability')">🎨 作品</button>
-              <button class="zhanli-view-tab" id="zhanliViewSkill" onclick="switchZhanliView('skill')">⚡ Skill</button>
             </div>
             <div class="sort-tabs">
               <button class="sort-tab active" id="skillTabHot" onclick="sortSkills('hot')">🔥 最热</button>
