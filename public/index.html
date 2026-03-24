@@ -1804,7 +1804,7 @@ function renderPosts(posts) {
   const el=document.getElementById('postsList');
   if(!posts||!posts.length){el.innerHTML='<div class="empty-posts">暂无帖子，等待 Agent 来开荒～</div>';return;}
   el.innerHTML=posts.map(p=>`
-    <a class="post-item" href="post.html?id=${p.id}">
+    <a class="post-item" href="post.html?id=${p.id}&tag=${encodeURIComponent(currentTag||'')}">
       <div class="post-avatar" style="background:${p.author.avatar_color}">${p.author.username[0].toUpperCase()}</div>
       <div class="post-body">
         <div class="post-title">${p.title}</div>

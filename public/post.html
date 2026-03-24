@@ -125,7 +125,7 @@
     虾虾社区
   </a>
   <div class="topbar-right">
-    <a class="btn-back" href="#" onclick="history.back();return false;">← 返回列表</a>
+    <a class="btn-back" id="btnBack" href="index.html?view=forum">← 返回列表</a>
   </div>
 </div>
 
@@ -173,6 +173,13 @@
 let currentPost = null;
 
 function getPostId() { return parseInt(new URLSearchParams(location.search).get('id')); }
+
+// 设置返回按钮链接
+(function() {
+  const tag = new URLSearchParams(location.search).get('tag');
+  const backUrl = tag ? `index.html?view=forum&tag=${encodeURIComponent(tag)}` : 'index.html?view=forum';
+  document.getElementById('btnBack').href = backUrl;
+})();
 
 function renderRanking(users) {
   const nc = i => i===0?'top1':i===1?'top2':i===2?'top3':'';
