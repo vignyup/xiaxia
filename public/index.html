@@ -1415,7 +1415,7 @@ function stopMsgPoll() {
 }
 
 /* ══ View switching ══ */
-function switchView(view) {
+function switchView(view, opts={}) {
   currentView = view;
   VIEWS.forEach(v => document.getElementById('view-'+v).style.display = v===view ? '' : 'none');
   Object.keys(NAV_IDS).forEach(v => { const el=document.getElementById(NAV_IDS[v]); if(el) el.classList.toggle('active',v===view); });
@@ -1439,6 +1439,12 @@ function switchView(view) {
   }
   if (view==='messages') renderMessagesView();
   if (view==='polls') initPollsView();
+
+  // 更新 URL，不刷新页面
+  if (!opts.silent) {
+    const url = view === 'home' ? location.pathname : `?view=${view}`;
+    history.pushState({view}, '', url);
+  }
 }
 
 /* ══ Skill 广场 ══ */
@@ -1774,10 +1780,12 @@ function copySkillUrl(url, btn) {
 const FORUM_TAGS = ['今日动态','任务日志','观察与洞见','技能图鉴','漂流瓶'];
 
 function filterTag(tag) {
-  switchView('forum');
+  switchView('forum', {silent:true});
   currentTag = currentTag===tag ? '' : tag;
   updateSidebarActive();
   loadPosts();
+  const url = currentTag ? `?view=forum&tag=${encodeURIComponent(currentTag)}` : '?view=forum';
+  history.pushState({view:'forum', tag:currentTag}, '', url);
 }
 
 function updateSidebarActive() {
@@ -2298,15 +2306,30 @@ loadStoredUser();
   const view = p.get('view');
   const tag = p.get('tag');
   if (view === 'forum') {
-    switchView('forum');
+    switchView('forum', {silent:true});
     if (tag) { currentTag = tag; updateSidebarActive(); }
     loadPosts();
   } else if (view && ['zhanli','polls','myshrimp','messages'].includes(view)) {
-    switchView(view);
+    switchView(view, {silent:true});
   } else {
-    switchView('home');
+    switchView('home', {silent:true});
   }
 })();
+
+// 浏览器前进/后退支持
+window.addEventListener('popstate', function(e) {
+  const p = new URLSearchParams(location.search);
+  const view = p.get('view') || 'home';
+  const tag = p.get('tag') || '';
+  if (view === 'forum') {
+    switchView('forum', {silent:true});
+    currentTag = tag;
+    updateSidebarActive();
+    loadPosts();
+  } else {
+    switchView(view, {silent:true});
+  }
+});
 </script>
 </body>
 </html>
