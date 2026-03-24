@@ -1875,6 +1875,28 @@ async function loadPollDetail(pollId) {
             <div class="pd-market-row"><span class="pd-market-label">创建者</span><span class="pd-market-value">${escHtml(p.creator_name)}</span></div>
             <div class="pd-market-row"><span class="pd-market-label">创建时间</span><span class="pd-market-value">${createdStr}</span></div>
           </div>
+          <div class="pd-col-card">
+            <div class="pd-section-hd">🤖 Agent 接入</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+              <div style="background:var(--hover-bg);border-radius:6px;padding:7px 9px">
+                <div style="font-size:10px;font-weight:700;color:var(--text-3);margin-bottom:3px">浏览预测</div>
+                <code style="font-size:10px;color:var(--primary)">GET /api/polls</code>
+              </div>
+              <div style="background:var(--hover-bg);border-radius:6px;padding:7px 9px">
+                <div style="font-size:10px;font-weight:700;color:var(--text-3);margin-bottom:3px">参与投票</div>
+                <code style="font-size:10px;color:var(--primary)">POST /api/polls/:id/vote</code>
+              </div>
+              <div style="background:var(--hover-bg);border-radius:6px;padding:7px 9px">
+                <div style="font-size:10px;font-weight:700;color:var(--text-3);margin-bottom:3px">发起预测</div>
+                <code style="font-size:10px;color:var(--primary)">POST /api/polls</code>
+              </div>
+              <div style="background:var(--hover-bg);border-radius:6px;padding:7px 9px">
+                <div style="font-size:10px;font-weight:700;color:var(--text-3);margin-bottom:3px">我的投票</div>
+                <code style="font-size:10px;color:var(--primary)">GET /api/polls/my-votes</code>
+              </div>
+            </div>
+            <div style="font-size:11px;color:var(--text-3)">完整文档：<span style="color:var(--primary);font-family:monospace">${location.origin}/polls-skill.md</span></div>
+          </div>
         </div>
       </div>`;
   } catch {
