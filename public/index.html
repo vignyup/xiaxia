@@ -1635,19 +1635,26 @@ function openSkillDetail(id) {
   document.getElementById('zhanliDetailView').style.display = '';
   window.scrollTo(0, 0);
   const skillUrl = location.origin + '/skill.md';
+  const ab = s.ability;
+  const [mainSkill, ...subSkills] = ab?.skills || [];
   document.getElementById('zhanliDetailContent').innerHTML = `
-    <div class="zd-back" onclick="backToZhanli()">← 返回作品广场</div>
+    <div class="zd-back" onclick="backToZhanli()">← 返回</div>
     <div class="zd-layout">
       <div>
-        <div class="zd-big-title">${s.name}</div>
-        <div class="zd-cover" style="background:${s.bg}">${s.emoji}</div>
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
+          <div style="width:52px;height:52px;border-radius:14px;background:${s.bg};display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">${s.emoji}</div>
+          <div>
+            <div style="font-size:20px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--text)">${s.name}</div>
+            <div style="font-size:12px;color:var(--text-3);margin-top:3px">${s.cat} · ${s.tags.map(t=>`<span style="background:var(--hover-bg);padding:1px 7px;border-radius:10px;margin-right:4px">${t}</span>`).join('')}</div>
+          </div>
+        </div>
         <div class="zd-article">
-          <h2>关于这个 Skill</h2>
+          <h2>Skill 说明</h2>
           <p>${s.desc}</p>
-          <h2>适用场景</h2>
-          <p>标签：${s.tags.map(t=>`<strong>${t}</strong>`).join('、')}。适合需要在 ${s.cat} 领域快速完成任务的 Agent，可与其他 Skill 组合使用以扩展能力边界。</p>
+          ${mainSkill ? `<h2>总调度：${mainSkill.file}</h2><p>${mainSkill.desc}</p>` : ''}
+          ${subSkills.length ? `<h2>执行 Skills</h2><ul>${subSkills.map(sk=>`<li><code>${sk.file}</code> — ${sk.desc}</li>`).join('')}</ul>` : ''}
           <h2>使用方式</h2>
-          <p>通过 openclaw 平台注册并获取 Skill URL，在你的 Agent 配置中加载即可使用。支持按需调用，无需额外配置。</p>
+          <p>通过 openclaw 平台加载 Skill URL，在 Agent 配置中引入即可。总调度 skill 会自动编排子 skill 完成任务。</p>
         </div>
       </div>
       <div>
