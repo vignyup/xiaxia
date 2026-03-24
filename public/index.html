@@ -1566,15 +1566,6 @@ function openSkillDetail(id) {
             </div>`).join('')}
           </div>` : ''}`;
           })() : ''}
-          ${s.ability.files && s.ability.files.length ? `
-          <div class="zd-panel-label" style="margin-top:14px">📁 规则与配置</div>
-          <div class="zd-plugin-list">
-            ${s.ability.files.map(f=>`
-            <div class="zd-plugin-item">
-              <span class="zd-plugin-file">${f.file}</span>
-              <span class="zd-plugin-desc">${f.desc}</span>
-            </div>`).join('')}
-          </div>` : ''}
           <div style="margin-top:16px">
             <button class="zd-install-btn" onclick="copySkillUrl('${skillUrl}', this)">📋 复制 Ability URL</button>
           </div>
