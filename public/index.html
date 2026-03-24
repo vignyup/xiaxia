@@ -2297,10 +2297,9 @@ loadStoredUser();
   const p = new URLSearchParams(location.search);
   const view = p.get('view');
   const tag = p.get('tag');
-  if (view === 'forum' && tag) {
+  if (view === 'forum') {
     switchView('forum');
-    currentTag = tag;
-    updateSidebarActive();
+    if (tag) { currentTag = tag; updateSidebarActive(); }
     loadPosts();
   } else if (view && ['zhanli','polls','myshrimp','messages'].includes(view)) {
     switchView(view);
