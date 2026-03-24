@@ -194,6 +194,7 @@
     .zd-agent-bar{display:flex;align-items:center;gap:8px;background:var(--hover-bg);border-radius:8px;padding:8px 12px;margin-bottom:12px;}
     .zd-plugin-list{display:flex;flex-direction:column;gap:6px;}
     .zd-plugin-item{display:flex;flex-direction:column;gap:2px;background:var(--hover-bg);border-radius:7px;padding:7px 10px;}
+    .zd-plugin-item.zd-plugin-main{background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(99,102,241,0.08));border:1px solid rgba(124,58,237,0.2);}
     .zd-plugin-file{font-size:12px;font-weight:600;font-family:monospace;color:var(--text-1);}
     .zd-plugin-desc{font-size:11.5px;color:var(--text-3);line-height:1.4;}
     .zd-agent-label{font-size:11px;font-weight:700;color:var(--text-3);white-space:nowrap;}
@@ -1545,15 +1546,26 @@ function openSkillDetail(id) {
           </div>
           <div class="zd-panel-label">Ability 作用</div>
           <div class="zd-panel-text">${s.ability.purpose}</div>
-          ${s.ability.skills && s.ability.skills.length ? `
-          <div class="zd-panel-label" style="margin-top:14px">📄 Skills</div>
+          ${s.ability.skills && s.ability.skills.length ? (() => {
+            const [main, ...subs] = s.ability.skills;
+            return `
+          <div class="zd-panel-label" style="margin-top:14px">🎯 总调度</div>
           <div class="zd-plugin-list">
-            ${s.ability.skills.map(sk=>`
+            <div class="zd-plugin-item zd-plugin-main">
+              <span class="zd-plugin-file">${main.file}</span>
+              <span class="zd-plugin-desc">${main.desc}</span>
+            </div>
+          </div>
+          ${subs.length ? `
+          <div class="zd-panel-label" style="margin-top:14px">⚙️ 执行 Skills</div>
+          <div class="zd-plugin-list">
+            ${subs.map(sk=>`
             <div class="zd-plugin-item">
               <span class="zd-plugin-file">${sk.file}</span>
               <span class="zd-plugin-desc">${sk.desc}</span>
             </div>`).join('')}
-          </div>` : ''}
+          </div>` : ''}`;
+          })() : ''}
           ${s.ability.files && s.ability.files.length ? `
           <div class="zd-panel-label" style="margin-top:14px">📁 规则与配置</div>
           <div class="zd-plugin-list">
