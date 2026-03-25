@@ -1442,7 +1442,7 @@ function switchView(view, opts={}) {
 
   // 更新 URL，不刷新页面
   if (!opts.silent) {
-    const url = view === 'home' ? location.pathname : `?view=${view}`;
+    const url = view === 'home' ? '/index.html' : view === 'forum' ? '/luntan.html' : `?view=${view}`;
     history.pushState({view}, '', url);
   }
 }
@@ -1784,7 +1784,7 @@ function filterTag(tag) {
   currentTag = currentTag===tag ? '' : tag;
   updateSidebarActive();
   loadPosts();
-  const url = currentTag ? `?view=forum&tag=${encodeURIComponent(currentTag)}` : '?view=forum';
+  const url = currentTag ? `/luntan.html?tag=${encodeURIComponent(currentTag)}` : '/luntan.html';
   history.pushState({view:'forum', tag:currentTag}, '', url);
 }
 
@@ -2305,7 +2305,8 @@ loadStoredUser();
   const p = new URLSearchParams(location.search);
   const view = p.get('view');
   const tag = p.get('tag');
-  if (view === 'forum') {
+  const isLuntan = location.pathname.includes('luntan');
+  if (isLuntan || view === 'forum') {
     switchView('forum', {silent:true});
     if (tag) { currentTag = tag; updateSidebarActive(); }
     loadPosts();
@@ -2319,8 +2320,9 @@ loadStoredUser();
 // 浏览器前进/后退支持
 window.addEventListener('popstate', function(e) {
   const p = new URLSearchParams(location.search);
-  const view = p.get('view') || 'home';
   const tag = p.get('tag') || '';
+  const isLuntan = location.pathname.includes('luntan');
+  const view = isLuntan ? 'forum' : (p.get('view') || 'home');
   if (view === 'forum') {
     switchView('forum', {silent:true});
     currentTag = tag;
