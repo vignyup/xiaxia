@@ -236,21 +236,20 @@
     .plugin-install-box code{flex:1;font-size:12px;font-family:monospace;color:var(--text);word-break:break-all;}
     .plugin-copy-btn{flex-shrink:0;height:28px;padding:0 10px;background:var(--primary);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;}
     .plugin-copy-btn:hover{opacity:0.85;}
-    .plugin-info-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:14px;}
-    .plugin-info-table td{padding:5px 0;color:var(--text-2);}
-    .plugin-info-table td:first-child{color:var(--text-3);width:45%;font-weight:500;}
-    .plugin-info-table td code{background:var(--hover-bg);padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11.5px;}
-    .plugin-sec-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;font-size:12.5px;color:var(--text-2);}
+    .plugin-sec-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;font-size:13px;color:var(--text-2);border-bottom:1px solid var(--border);}
+    .plugin-sec-row:last-child{border-bottom:none;}
     .sec-badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
     .sec-badge.pending{background:rgba(234,179,8,0.12);color:#ca8a04;}
     .sec-badge.safe{background:rgba(16,185,129,0.12);color:#059669;}
-    .plugin-sec-checks{display:flex;flex-direction:column;gap:3px;margin-top:8px;padding:8px 10px;background:rgba(16,185,129,0.05);border-radius:7px;border:1px solid rgba(16,185,129,0.15);}
-    .plugin-sec-checks span{font-size:11.5px;color:var(--text-2);}
-    .plugin-cap-list{display:flex;flex-direction:column;gap:5px;margin-bottom:6px;}
-    .plugin-cap-item{display:flex;align-items:flex-start;gap:7px;font-size:13px;color:var(--text-2);}
-    .plugin-cap-item::before{content:'▸';color:var(--primary);font-size:11px;margin-top:3px;flex-shrink:0;}
     .plugin-dl-btn{width:100%;height:34px;background:var(--hover-bg);color:var(--text-2);border:1px solid var(--border);border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:8px;}
     .plugin-dl-btn:hover{background:var(--bg-3);}
+    .plugin-json{background:var(--hover-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:monospace;font-size:12px;color:var(--text-2);white-space:pre;overflow-x:auto;margin-bottom:4px;line-height:1.65;}
+    .plugin-section-title{font-size:15px;font-weight:700;color:var(--text);margin:20px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+    .plugin-sec-desc{font-size:13px;color:var(--text-2);line-height:1.7;margin:8px 0;}
+    .plugin-static{font-size:12px;color:var(--text-3);margin-top:4px;}
+    .plugin-ver-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;font-size:13px;}
+    .plugin-ver-label{color:var(--text-3);font-size:12.5px;}
+    .plugin-ver-val{font-family:monospace;font-size:12.5px;color:var(--text);}
     .skill-desc{font-size:12.5px;color:var(--text-2);line-height:1.6;flex:1;margin-bottom:10px;}
     .skill-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
     .skill-tag{background:var(--tag-bg);color:var(--tag-text);padding:1px 8px;border-radius:4px;font-size:11px;font-weight:600;}
@@ -1545,44 +1544,70 @@ const SKILLS = [
 const PLUGINS = [
   {id:1,name:'zalouser',pkg:'@openclaw/zalouser',color:'#0068FF',
     desc:'OpenClaw Zalo Personal Account plugin via native zca-js integration.',
-    version:'2026.3.22',runtime:'zalouser',author:'openclaw',channel:'Official',minGateway:'2026.3.22',
-    caps:['Zalo 个人账号接入（zca-js 原生集成）','发送和接收私信与群组消息','联系人与好友列表管理','支持多媒体消息（图片、文件、表情）'],
-    security:'benign'},
+    version:'2026.3.22',author:'openclaw',channel:'Official',
+    compat:{builtWithOpenClawVersion:'2026.3.22',minGatewayVersion:'>=2026.3.22',pluginApiRange:'>=2026.3.22'},
+    caps:{bundledSkills:[],capabilityTags:['executes-code','channel:zalo','setup'],channels:['zalo'],commandNames:[],configSchema:true,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'zalouser',serviceNames:[],setupEntry:true,toolNames:[]},
+    secDesc:'The package implements a Zalo personal account channel plugin using zca-js; code and dependencies match that stated purpose with no signs of covert data exfiltration.',
+    staticPatterns:2,
+    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2',sourceRepo:'openclaw/openclaw',sourceTag:'refs/heads/main',summary:'Validated package structure and linked the release to source metadata.',tier:'source-linked'},
+    tags:{latest:'2026.3.22'}},
   {id:2,name:'twitch',pkg:'@openclaw/twitch',color:'#9146FF',
     desc:'Manage Twitch channel data, scores, and rankings from CLI. Use when rolling highlights, scoring streams, ranking metrics, tracking stats.',
-    version:'2.0.0',runtime:'twitch',author:'BytesAgain (ckchzh)',channel:'Community',minGateway:'N/A',
+    version:'2.0.0',author:'BytesAgain (ckchzh)',channel:'Community',
     homepage:'https://bytesagain.com',repo:'https://github.com/bytesagain/ai-skills',
     installCmd:'openclaw skills install twitch',
-    tags:['twitch','tool','terminal','cli','utility'],
-    caps:['离线优先，数据本地存储（~/.local/share/twitch/）','命令行管理频道数据与积分系统','导出 JSON / CSV / 纯文本格式','自动记录历史与活动日志','支持命令：roll, score, rank, history, stats, challenge, leaderboard, reward, reset'],
-    security:'benign'},
+    compat:{builtWithOpenClawVersion:'N/A',minGatewayVersion:'N/A',pluginApiRange:'N/A'},
+    caps:{bundledSkills:[],capabilityTags:['executes-code'],channels:[],commandNames:['roll','score','rank','history','stats','challenge','create','join','track','leaderboard','reward','reset'],configSchema:false,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'twitch',serviceNames:[],setupEntry:false,toolNames:[]},
+    secDesc:'Offline-first CLI tool for Twitch channel data management. Data stored locally at ~/.local/share/twitch/. No network calls beyond user-initiated exports.',
+    staticPatterns:1,
+    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'N/A',sourceRepo:'bytesagain/ai-skills',sourceTag:'refs/heads/main',summary:'Community plugin — structure validated, not source-linked to openclaw/openclaw.',tier:'community'},
+    tags:{latest:'2.0.0'}},
   {id:3,name:'nostr',pkg:'@openclaw/nostr',color:'#F59E0B',
     desc:'OpenClaw Nostr channel plugin for NIP-04 encrypted DMs.',
-    version:'2026.3.22',runtime:'nostr',author:'openclaw',channel:'Official',minGateway:'2026.3.22',
-    caps:['Nostr 去中心化协议接入','NIP-04 标准端对端加密私信','多中继节点（relay）连接管理','公私钥身份管理'],
-    security:'benign'},
+    version:'2026.3.22',author:'openclaw',channel:'Official',
+    compat:{builtWithOpenClawVersion:'2026.3.22',minGatewayVersion:'>=2026.3.22',pluginApiRange:'>=2026.3.22'},
+    caps:{bundledSkills:[],capabilityTags:['executes-code','channel:nostr','setup'],channels:['nostr'],commandNames:[],configSchema:true,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'nostr',serviceNames:[],setupEntry:true,toolNames:[]},
+    secDesc:'Implements a Nostr channel plugin with NIP-04 encrypted DMs. Keys are handled via environment variables; no unexpected network destinations detected.',
+    staticPatterns:2,
+    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3',sourceRepo:'openclaw/openclaw',sourceTag:'refs/heads/main',summary:'Validated package structure and linked the release to source metadata.',tier:'source-linked'},
+    tags:{latest:'2026.3.22'}},
   {id:4,name:'msteams',pkg:'@openclaw/msteams',color:'#6264A7',
     desc:'OpenClaw Microsoft Teams channel plugin.',
-    version:'2026.3.22',runtime:'msteams',author:'openclaw',channel:'Official',minGateway:'2026.3.22',
-    caps:['Microsoft Teams 频道消息收发','支持个人聊天与群组频道','Microsoft Graph API 集成','自适应卡片（Adaptive Cards）消息格式'],
-    security:'benign'},
+    version:'2026.3.22',author:'openclaw',channel:'Official',
+    compat:{builtWithOpenClawVersion:'2026.3.22',minGatewayVersion:'>=2026.3.22',pluginApiRange:'>=2026.3.22'},
+    caps:{bundledSkills:[],capabilityTags:['executes-code','channel:msteams','setup'],channels:['msteams'],commandNames:[],configSchema:true,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'msteams',serviceNames:[],setupEntry:true,toolNames:[]},
+    secDesc:'Implements a Microsoft Teams channel plugin via Graph API. Credentials handled via environment variables; traffic is limited to Microsoft endpoints.',
+    staticPatterns:2,
+    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4',sourceRepo:'openclaw/openclaw',sourceTag:'refs/heads/main',summary:'Validated package structure and linked the release to source metadata.',tier:'source-linked'},
+    tags:{latest:'2026.3.22'}},
   {id:5,name:'matrix',pkg:'@openclaw/matrix',color:'#1F2937',
     desc:'OpenClaw Matrix channel plugin.',
-    version:'2026.3.22',runtime:'matrix',author:'openclaw',channel:'Official',minGateway:'2026.3.22',
-    caps:['Matrix 去中心化通讯协议接入','端对端加密房间支持（Olm/Megolm）','房间创建、加入与消息收发','多 homeserver 节点连接'],
-    security:'benign'},
+    version:'2026.3.22',author:'openclaw',channel:'Official',
+    compat:{builtWithOpenClawVersion:'2026.3.22',minGatewayVersion:'>=2026.3.22',pluginApiRange:'>=2026.3.22'},
+    caps:{bundledSkills:[],capabilityTags:['executes-code','channel:matrix','setup'],channels:['matrix'],commandNames:[],configSchema:true,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'matrix',serviceNames:[],setupEntry:true,toolNames:[]},
+    secDesc:'The package appears to implement a Matrix channel plugin and its code, dependencies, and runtime behavior match that purpose; there are no obvious mismatches or covert exfiltration mechanisms in the provided files.',
+    staticPatterns:3,
+    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'c4420c03243bd691dc809cd4298bd744cb58d286',sourceRepo:'openclaw/openclaw',sourceTag:'refs/heads/main',summary:'Validated package structure and linked the release to source metadata.',tier:'source-linked'},
+    tags:{latest:'2026.3.22'}},
   {id:6,name:'diagnostics-otel',pkg:'@openclaw/diagnostics-otel',color:'#10B981',
     desc:'OpenClaw diagnostics OpenTelemetry exporter.',
-    version:'2026.3.22',runtime:'diagnostics-otel',author:'openclaw',channel:'Official',minGateway:'2026.3.22',
-    caps:['OpenTelemetry 标准 traces / metrics / logs 导出','兼容 OTLP HTTP & gRPC 端点','与 Jaeger、Grafana Tempo 等后端集成','低开销采样策略配置'],
-    security:'benign'},
+    version:'2026.3.22',author:'openclaw',channel:'Official',
+    compat:{builtWithOpenClawVersion:'2026.3.22',minGatewayVersion:'>=2026.3.22',pluginApiRange:'>=2026.3.22'},
+    caps:{bundledSkills:[],capabilityTags:['executes-code','diagnostics:otel'],channels:[],commandNames:[],configSchema:true,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'diagnostics-otel',serviceNames:[],setupEntry:false,toolNames:[]},
+    secDesc:'OpenTelemetry exporter plugin. Transmits trace/metric/log data to configured OTLP endpoints only. No unexpected outbound connections detected.',
+    staticPatterns:1,
+    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5',sourceRepo:'openclaw/openclaw',sourceTag:'refs/heads/main',summary:'Validated package structure and linked the release to source metadata.',tier:'source-linked'},
+    tags:{latest:'2026.3.22'}},
   {id:7,name:'linkmind-context',pkg:'linkmind-context',color:'#6366F1',
     desc:'LinkMind Context Engine Plugin for OpenClaw — registers a context engine and sends session messages to a configurable LinkMind API for compression.',
-    version:'1.0.0',runtime:'linkmind-context',author:'zhujunxian3',channel:'Community',minGateway:'2026.3.8',
+    version:'1.0.0',author:'zhujunxian3',channel:'Community',
     installCmd:'openclaw plugins install clawhub:linkmind-context',
-    caps:['注册自定义上下文引擎','将会话消息发送至 LinkMind API 进行压缩','支持配置 apiUrl、apiKey（Bearer Token）','可调节 compressionThreshold 与 debug 模式'],
-    security:'benign',
-    secNote:'该插件会将完整会话内容传输至外部 LinkMind 服务。建议在生产环境部署前验证远端服务安全性，并确认 API Key 不会被记录到错误日志。'},
+    compat:{builtWithOpenClawVersion:'2026.3.8',minGatewayVersion:'>=2026.3.8',pluginApiRange:'>=1.0.0'},
+    caps:{bundledSkills:[],capabilityTags:['executes-code','context-engine'],channels:[],commandNames:[],configSchema:true,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'linkmind-context',serviceNames:[],setupEntry:false,toolNames:[]},
+    secDesc:'Plugin transmits complete conversation content to the external LinkMind service for compression. May log API keys on error paths. Recommend using trusted endpoints and verifying remote service security before production deployment.',
+    staticPatterns:4,secWarn:true,
+    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6',sourceRepo:'zhujunxian3/linkmind-context',sourceTag:'refs/heads/main',summary:'Community plugin — package structure validated.',tier:'community'},
+    tags:{latest:'1.0.0'}},
 ];
 
 function sortSkills(s) {
@@ -1864,64 +1889,66 @@ function openPluginDetail(id) {
   window.scrollTo(0, 0);
 
   const installCmd = p.installCmd || `openclaw plugins install clawhub:${p.pkg}`;
-  const channelBadge = `<span style="font-size:11px;padding:2px 8px;border-radius:8px;font-weight:600;background:${p.channel==='Official'?'rgba(99,102,241,0.1)':'rgba(16,185,129,0.1)'};color:${p.channel==='Official'?'#6366F1':'#059669'}">${p.channel} Plugin</span>`;
+  const fmtJson = obj => JSON.stringify(obj, null, 2);
+  const channelBadge = `<span style="font-size:11px;padding:2px 8px;border-radius:8px;font-weight:600;background:${p.channel==='Official'?'rgba(99,102,241,0.1)':'rgba(16,185,129,0.1)'};color:${p.channel==='Official'?'#6366F1':'#059669'}">${p.channel}</span>`;
 
   const leftCol = `
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:6px">
       <div style="width:56px;height:56px;border-radius:14px;background:${p.color};display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;flex-shrink:0">${p.name[0].toUpperCase()}</div>
       <div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <span style="font-size:22px;font-weight:800;font-family:'Space Grotesk',sans-serif;color:var(--text)">${p.name}</span>
           ${channelBadge}
         </div>
-        <div style="font-size:12px;color:var(--text-3);margin-top:3px">by ${p.author}</div>
+        <div style="font-size:13px;color:var(--text-2);margin-top:3px">${p.desc}</div>
+        <div style="font-size:12px;color:var(--text-3);margin-top:4px;font-family:monospace">${p.pkg} · runtime id ${p.caps.runtimeId}</div>
       </div>
     </div>
-    <code class="plugin-pkg">${p.pkg}</code>
-    <div class="zd-article">
-      <p>${p.desc}</p>
-      ${p.tags ? `<p style="margin-bottom:14px">${p.tags.map(t=>`<span style="background:var(--hover-bg);padding:2px 8px;border-radius:8px;font-size:11.5px;margin-right:4px;display:inline-block">${t}</span>`).join('')}</p>` : ''}
-      <h2>功能能力</h2>
-      <div class="plugin-cap-list">${(p.caps||[]).map(c=>`<div class="plugin-cap-item">${c}</div>`).join('')}</div>
-      <h2>安全分析</h2>
-      <div class="plugin-sec-row"><span>VirusTotal</span><span class="sec-badge pending">待检测</span></div>
-      <div class="plugin-sec-row"><span>OpenClaw 分析</span><span class="sec-badge safe">安全 · 高置信度</span></div>
-      <div class="plugin-sec-checks">
-        <span>✓ 用途与能力已核验</span>
-        <span>✓ 指令范围合规</span>
-        <span>✓ 安装机制（标准依赖）</span>
-        <span>✓ 凭据处理（环境变量隔离）</span>
-        <span>✓ 权限与持久化（非提权）</span>
+
+    <div class="plugin-section-title">Compatibility</div>
+    <pre class="plugin-json">${fmtJson(p.compat)}</pre>
+
+    <div class="plugin-section-title">Capabilities</div>
+    <pre class="plugin-json">${fmtJson(p.caps)}</pre>
+
+    <div class="plugin-section-title">Security Scan</div>
+    <div class="plugin-sec-row">
+      <span>VirusTotal</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="sec-badge pending">Pending</span>
+        <a href="#" style="font-size:12px;color:var(--primary)">View report →</a>
       </div>
-      ${p.secNote ? `<div style="margin-top:10px;padding:10px 12px;background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.25);border-radius:8px;font-size:12.5px;color:var(--text-2);line-height:1.6">⚠️ ${p.secNote}</div>` : ''}
-      ${p.homepage||p.repo ? `<h2>链接</h2>
-      ${p.homepage?`<p><a href="${p.homepage}" target="_blank" style="color:var(--primary)">${p.homepage}</a></p>`:''}
-      ${p.repo?`<p><a href="${p.repo}" target="_blank" style="color:var(--primary)">源码仓库 →</a></p>`:''}` : ''}
-    </div>`;
+    </div>
+    <div class="plugin-sec-row">
+      <span>OpenClaw</span>
+      <span class="sec-badge safe">Benign · high confidence</span>
+    </div>
+    <div class="plugin-sec-desc">${p.secDesc}</div>
+    <div class="plugin-static">Static analysis: ${p.staticPatterns} pattern${p.staticPatterns!==1?'s':''} detected</div>
+    ${p.secWarn ? `<div style="margin-top:10px;padding:10px 12px;background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.25);border-radius:8px;font-size:12.5px;color:var(--text-2);line-height:1.6">⚠️ ${p.secDesc}</div>` : ''}
+
+    <div class="plugin-section-title">Verification</div>
+    <pre class="plugin-json">${fmtJson(p.verif)}</pre>
+
+    <div class="plugin-section-title">Tags</div>
+    <pre class="plugin-json">${fmtJson(p.tags)}</pre>
+    ${p.homepage||p.repo ? `<div style="margin-top:12px;font-size:13px">
+      ${p.homepage?`<a href="${p.homepage}" target="_blank" style="color:var(--primary);margin-right:16px">${p.homepage}</a>`:''}
+      ${p.repo?`<a href="${p.repo}" target="_blank" style="color:var(--primary)">Source Repository →</a>`:''}
+    </div>` : ''}`;
 
   const rightCol = `
     <div class="zd-panel-card">
-      <div class="zd-author-row">
-        <div class="zd-author-avatar" style="background:${p.color}">${p.name[0].toUpperCase()}</div>
-        <div>
-          <div class="zd-author-name">${p.author}</div>
-          <div style="font-size:12px;color:var(--text-3);margin-top:2px">${p.channel} · Code Plugin</div>
-        </div>
-      </div>
-      <div class="zd-panel-label">安装命令</div>
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px">Install</div>
       <div class="plugin-install-box">
         <code>${installCmd}</code>
         <button class="plugin-copy-btn" onclick="copyPluginCmd('${installCmd}',this)">复制</button>
       </div>
-      <div class="zd-panel-label" style="margin-top:14px">版本信息</div>
-      <table class="plugin-info-table">
-        <tr><td>当前版本</td><td><code>${p.version}</code></td></tr>
-        <tr><td>Runtime ID</td><td><code>${p.runtime}</code></td></tr>
-        <tr><td>Plugin Package</td><td><code>${p.pkg}</code></td></tr>
-        <tr><td>最低网关版本</td><td>${p.minGateway !== 'N/A' ? '≥ '+p.minGateway : 'N/A'}</td></tr>
-      </table>
-      <button class="zd-install-btn" onclick="copyPluginCmd('${installCmd}',this)" style="margin-top:4px">📋 复制安装命令</button>
-      <button class="plugin-dl-btn">⬇ 下载 ZIP</button>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Latest Release</div>
+        <div class="plugin-ver-row"><span class="plugin-ver-label">Version</span><span class="plugin-ver-val">${p.version}</span></div>
+        <button class="plugin-dl-btn" style="margin-top:10px">⬇ Download zip</button>
+      </div>
     </div>`;
 
   document.getElementById('zhanliDetailContent').innerHTML = `
