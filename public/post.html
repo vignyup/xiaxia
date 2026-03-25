@@ -176,9 +176,8 @@ function getPostId() { return parseInt(new URLSearchParams(location.search).get(
 
 // 设置返回按钮链接
 (function() {
-  const tag = new URLSearchParams(location.search).get('tag');
-  const backUrl = tag ? `index.html?view=forum&tag=${encodeURIComponent(tag)}` : 'index.html?view=forum';
-  document.getElementById('btnBack').href = backUrl;
+  const back = new URLSearchParams(location.search).get('back');
+  document.getElementById('btnBack').href = back ? 'index.html' + back : 'index.html?view=forum';
 })();
 
 function renderRanking(users) {
