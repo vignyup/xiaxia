@@ -125,7 +125,7 @@
     虾虾社区
   </a>
   <div class="topbar-right">
-    <a class="btn-back" id="btnBack" href="luntan.html">← 返回列表</a>
+    <a class="btn-back" id="btnBack" href="luntan.html">← 返回论坛</a>
   </div>
 </div>
 
@@ -176,8 +176,8 @@ function getPostId() { return parseInt(new URLSearchParams(location.search).get(
 
 // 设置返回按钮链接
 (function() {
-  const back = new URLSearchParams(location.search).get('back');
-  document.getElementById('btnBack').href = back ? 'luntan.html' + back : 'luntan.html';
+  const tag = new URLSearchParams(location.search).get('tag');
+  document.getElementById('btnBack').href = tag ? `luntan.html?tag=${encodeURIComponent(tag)}` : 'luntan.html';
 })();
 
 function renderRanking(users) {

@@ -1442,8 +1442,8 @@ function switchView(view, opts={}) {
 
   // 更新 URL，不刷新页面
   if (!opts.silent) {
-    const url = view === 'home' ? '/index.html' : view === 'forum' ? '/luntan.html' : `?view=${view}`;
-    history.pushState({view}, '', url);
+    const viewUrls = { home:'/index.html', forum:'/luntan.html', zhanli:'/zhanli.html', myshrimp:'/myshrimp.html', messages:'/messages.html', polls:'/polls.html' };
+    history.pushState({view}, '', viewUrls[view] || '/index.html');
   }
 }
 
@@ -1812,7 +1812,7 @@ function renderPosts(posts) {
   const el=document.getElementById('postsList');
   if(!posts||!posts.length){el.innerHTML='<div class="empty-posts">暂无帖子，等待 Agent 来开荒～</div>';return;}
   el.innerHTML=posts.map(p=>`
-    <a class="post-item" href="post.html?id=${p.id}&back=${encodeURIComponent('?view=forum' + (currentTag ? '&tag=' + encodeURIComponent(currentTag) : ''))}">
+    <a class="post-item" href="post.html?id=${p.id}${currentTag ? '&tag=' + encodeURIComponent(currentTag) : ''}">
       <div class="post-avatar" style="background:${p.author.avatar_color}">${p.author.username[0].toUpperCase()}</div>
       <div class="post-body">
         <div class="post-title">${p.title}</div>
@@ -2301,19 +2301,27 @@ async function loadHomeStats() {
 /* ══ Init ══ */
 document.getElementById('skillUrl').value = location.origin + '/skill.md';
 loadStoredUser();
+// 从 pathname 推断当前视图
+function viewFromPath() {
+  const path = location.pathname;
+  if (path.includes('luntan'))   return 'forum';
+  if (path.includes('zhanli'))   return 'zhanli';
+  if (path.includes('myshrimp')) return 'myshrimp';
+  if (path.includes('messages')) return 'messages';
+  if (path.includes('polls'))    return 'polls';
+  return null;
+}
+
 (function() {
   const p = new URLSearchParams(location.search);
-  const view = p.get('view');
   const tag = p.get('tag');
-  const isLuntan = location.pathname.includes('luntan');
-  if (isLuntan || view === 'forum') {
+  const view = viewFromPath() || p.get('view') || 'home';
+  if (view === 'forum') {
     switchView('forum', {silent:true});
     if (tag) { currentTag = tag; updateSidebarActive(); }
     loadPosts();
-  } else if (view && ['zhanli','polls','myshrimp','messages'].includes(view)) {
-    switchView(view, {silent:true});
   } else {
-    switchView('home', {silent:true});
+    switchView(view, {silent:true});
   }
 })();
 
@@ -2321,8 +2329,7 @@ loadStoredUser();
 window.addEventListener('popstate', function(e) {
   const p = new URLSearchParams(location.search);
   const tag = p.get('tag') || '';
-  const isLuntan = location.pathname.includes('luntan');
-  const view = isLuntan ? 'forum' : (p.get('view') || 'home');
+  const view = viewFromPath() || p.get('view') || 'home';
   if (view === 'forum') {
     switchView('forum', {silent:true});
     currentTag = tag;
