@@ -1541,32 +1541,48 @@ const SKILLS = [
       files:[{file:'report-template.md',desc:'周报/月报标准模板'},{file:'heartbeat.md',desc:'定时触发报告生成的心跳配置'},{file:'metric-dict.md',desc:'业务指标定义与计算口径'}]}},
 ];
 
-/* ══ Plugin 数据 ══ */
+/* ══ Plugin 数据（来自 clawhub.ai/plugins）══ */
 const PLUGINS = [
-  {id:1,name:'web-search',color:'#3B82F6',desc:'实时网络搜索，获取最新信息、新闻、研究内容，支持多引擎切换与结果摘要。',downloads:28543,stars:892,version:'2026.3.20',runtime:'web-search',author:'OpenClaw',minGateway:'2026.3.0',
-    caps:['多引擎并行搜索（Google/Bing/DuckDuckGo）','自动提取摘要与关键信息','可信度评估与来源标注','支持时效性过滤（最近 24h / 7d / 30d）']},
-  {id:2,name:'code-executor',color:'#10B981',desc:'安全沙箱执行 Python/JS/Bash 代码，支持图表生成和数据分析结果返回。',downloads:24671,stars:743,version:'2026.3.18',runtime:'code-executor',author:'OpenClaw',minGateway:'2026.3.0',
-    caps:['隔离沙箱环境，防止宿主系统污染','支持 Python / Node.js / Bash 三种运行时','图表自动渲染并以图片返回','执行超时与内存限制保护']},
-  {id:3,name:'file-manager',color:'#F59E0B',desc:'读写本地和云端文件，支持 PDF 解析、Markdown 渲染、批量处理与格式转换。',downloads:19832,stars:621,version:'2026.3.15',runtime:'file-manager',author:'OpenClaw',minGateway:'2026.2.0',
-    caps:['读写本地文件系统（沙箱路径）','PDF 文本/表格解析','Markdown → HTML 渲染','批量重命名、格式转换、压缩解压']},
-  {id:4,name:'image-gen',color:'#8B5CF6',desc:'调用主流图像生成模型，支持文生图、风格迁移、图片编辑与批量导出。',downloads:31205,stars:1024,version:'2026.3.22',runtime:'image-gen',author:'OpenClaw',minGateway:'2026.3.0',
-    caps:['接入 DALL-E 3 / Stable Diffusion / Flux','文生图、图生图、局部编辑（Inpainting）','风格迁移与提示词优化建议','批量生成与多尺寸导出']},
-  {id:5,name:'browser-ctrl',color:'#EF4444',desc:'控制浏览器自动化操作，支持页面截图、表单填写、元素点击与数据抓取。',downloads:17456,stars:534,version:'2026.3.10',runtime:'browser-ctrl',author:'OpenClaw',minGateway:'2026.3.0',
-    caps:['基于 Playwright 的无头浏览器控制','截图、滚动、表单填写、按钮点击','CSS/XPath 选择器数据抓取','Cookie 会话管理']},
-  {id:6,name:'email-sender',color:'#06B6D4',desc:'发送和读取邮件，支持 Gmail/Outlook，附件处理、模板管理与定时发送。',downloads:14329,stars:412,version:'2026.2.28',runtime:'email-sender',author:'OpenClaw',minGateway:'2026.2.0',
-    caps:['OAuth2 接入 Gmail 和 Outlook','附件上传与下载','Jinja2 邮件模板渲染','定时发送与草稿保存']},
-  {id:7,name:'calendar-sync',color:'#F97316',desc:'同步 Google/Apple 日历，创建事件提醒，智能处理会议安排与冲突检测。',downloads:11892,stars:367,version:'2026.2.20',runtime:'calendar-sync',author:'OpenClaw',minGateway:'2026.2.0',
-    caps:['双向同步 Google Calendar / iCal','创建、更新、删除日历事件','冲突检测与智能时段建议','跨时区转换支持']},
-  {id:8,name:'db-query',color:'#6366F1',desc:'连接 MySQL/PostgreSQL/MongoDB，自然语言转 SQL 查询并返回结构化结果。',downloads:22134,stars:689,version:'2026.3.18',runtime:'db-query',author:'OpenClaw',minGateway:'2026.3.0',
-    caps:['支持 MySQL / PostgreSQL / MongoDB / SQLite','自然语言转 SQL（NL2SQL）','只读安全模式防止误修改','结果自动转为 Markdown 表格']},
-  {id:9,name:'notion-writer',color:'#374151',desc:'读写 Notion 页面和数据库，支持模板创建、块操作和多工作区内容同步。',downloads:16780,stars:498,version:'2026.3.5',runtime:'notion-writer',author:'OpenClaw',minGateway:'2026.2.0',
-    caps:['Notion 官方 API 集成','页面创建、块追加、属性更新','数据库筛选查询','多工作区 Token 管理']},
-  {id:10,name:'slack-bot',color:'#6B21A8',desc:'发送 Slack 消息、创建频道、搜索历史记录，支持 Webhook 和 Bot 触发。',downloads:13245,stars:389,version:'2026.3.1',runtime:'slack-bot',author:'OpenClaw',minGateway:'2026.2.0',
-    caps:['发送消息到指定频道或 DM','创建频道与邀请成员','历史消息搜索','Incoming Webhook 和 Bot Token 双模式']},
-  {id:11,name:'github-ops',color:'#1F2937',desc:'操作 GitHub 仓库：创建 PR、查看 Issues、触发 Actions 工作流与代码审查。',downloads:25678,stars:812,version:'2026.3.20',runtime:'github-ops',author:'OpenClaw',minGateway:'2026.3.0',
-    caps:['创建 / 合并 Pull Request','查看、评论、关闭 Issues','触发 GitHub Actions 工作流','代码内容读取与提交']},
-  {id:12,name:'weather-api',color:'#0EA5E9',desc:'获取实时天气、未来预报、历史气象数据，支持全球城市查询与单位切换。',downloads:9876,stars:287,version:'2026.2.15',runtime:'weather-api',author:'OpenClaw',minGateway:'2026.2.0',
-    caps:['实时天气与 7 天预报','历史气象数据查询','全球城市名/坐标双模式','摄氏度/华氏度自由切换']},
+  {id:1,name:'zalouser',pkg:'@openclaw/zalouser',color:'#0068FF',
+    desc:'OpenClaw Zalo Personal Account plugin via native zca-js integration.',
+    version:'2026.3.22',runtime:'zalouser',author:'openclaw',channel:'Official',minGateway:'2026.3.22',
+    caps:['Zalo 个人账号接入（zca-js 原生集成）','发送和接收私信与群组消息','联系人与好友列表管理','支持多媒体消息（图片、文件、表情）'],
+    security:'benign'},
+  {id:2,name:'twitch',pkg:'@openclaw/twitch',color:'#9146FF',
+    desc:'Manage Twitch channel data, scores, and rankings from CLI. Use when rolling highlights, scoring streams, ranking metrics, tracking stats.',
+    version:'2.0.0',runtime:'twitch',author:'BytesAgain (ckchzh)',channel:'Community',minGateway:'N/A',
+    homepage:'https://bytesagain.com',repo:'https://github.com/bytesagain/ai-skills',
+    installCmd:'openclaw skills install twitch',
+    tags:['twitch','tool','terminal','cli','utility'],
+    caps:['离线优先，数据本地存储（~/.local/share/twitch/）','命令行管理频道数据与积分系统','导出 JSON / CSV / 纯文本格式','自动记录历史与活动日志','支持命令：roll, score, rank, history, stats, challenge, leaderboard, reward, reset'],
+    security:'benign'},
+  {id:3,name:'nostr',pkg:'@openclaw/nostr',color:'#F59E0B',
+    desc:'OpenClaw Nostr channel plugin for NIP-04 encrypted DMs.',
+    version:'2026.3.22',runtime:'nostr',author:'openclaw',channel:'Official',minGateway:'2026.3.22',
+    caps:['Nostr 去中心化协议接入','NIP-04 标准端对端加密私信','多中继节点（relay）连接管理','公私钥身份管理'],
+    security:'benign'},
+  {id:4,name:'msteams',pkg:'@openclaw/msteams',color:'#6264A7',
+    desc:'OpenClaw Microsoft Teams channel plugin.',
+    version:'2026.3.22',runtime:'msteams',author:'openclaw',channel:'Official',minGateway:'2026.3.22',
+    caps:['Microsoft Teams 频道消息收发','支持个人聊天与群组频道','Microsoft Graph API 集成','自适应卡片（Adaptive Cards）消息格式'],
+    security:'benign'},
+  {id:5,name:'matrix',pkg:'@openclaw/matrix',color:'#1F2937',
+    desc:'OpenClaw Matrix channel plugin.',
+    version:'2026.3.22',runtime:'matrix',author:'openclaw',channel:'Official',minGateway:'2026.3.22',
+    caps:['Matrix 去中心化通讯协议接入','端对端加密房间支持（Olm/Megolm）','房间创建、加入与消息收发','多 homeserver 节点连接'],
+    security:'benign'},
+  {id:6,name:'diagnostics-otel',pkg:'@openclaw/diagnostics-otel',color:'#10B981',
+    desc:'OpenClaw diagnostics OpenTelemetry exporter.',
+    version:'2026.3.22',runtime:'diagnostics-otel',author:'openclaw',channel:'Official',minGateway:'2026.3.22',
+    caps:['OpenTelemetry 标准 traces / metrics / logs 导出','兼容 OTLP HTTP & gRPC 端点','与 Jaeger、Grafana Tempo 等后端集成','低开销采样策略配置'],
+    security:'benign'},
+  {id:7,name:'linkmind-context',pkg:'linkmind-context',color:'#6366F1',
+    desc:'LinkMind Context Engine Plugin for OpenClaw — registers a context engine and sends session messages to a configurable LinkMind API for compression.',
+    version:'1.0.0',runtime:'linkmind-context',author:'zhujunxian3',channel:'Community',minGateway:'2026.3.8',
+    installCmd:'openclaw plugins install clawhub:linkmind-context',
+    caps:['注册自定义上下文引擎','将会话消息发送至 LinkMind API 进行压缩','支持配置 apiUrl、apiKey（Bearer Token）','可调节 compressionThreshold 与 debug 模式'],
+    security:'benign',
+    secNote:'该插件会将完整会话内容传输至外部 LinkMind 服务。建议在生产环境部署前验证远端服务安全性，并确认 API Key 不会被记录到错误日志。'},
 ];
 
 function sortSkills(s) {
@@ -1628,11 +1644,13 @@ function renderSkills() {
       <div class="skill-list-card" onclick="openPluginDetail(${p.id})" style="cursor:pointer">
         <div class="skill-list-avatar" style="background:${p.color}">${p.name[0].toUpperCase()}</div>
         <div class="skill-list-body">
-          <div class="skill-list-title">${p.name}</div>
+          <div class="skill-list-title" style="display:flex;align-items:center;gap:6px">
+            ${p.name}
+            <span style="font-size:10px;padding:1px 6px;border-radius:8px;font-weight:600;background:${p.channel==='Official'?'rgba(99,102,241,0.1)':'rgba(16,185,129,0.1)'};color:${p.channel==='Official'?'#6366F1':'#059669'}">${p.channel}</span>
+          </div>
           <div class="skill-list-desc">${p.desc}</div>
           <div class="skill-list-stats">
-            <span class="skill-list-stat">↓ ${p.downloads.toLocaleString()}</span>
-            <span class="skill-list-stat">☆ ${p.stars}</span>
+            <span class="skill-list-stat" style="font-family:monospace;font-size:11px">${p.pkg}</span>
             <span class="skill-list-stat">⊙ ${p.version}</span>
           </div>
         </div>
@@ -1845,20 +1863,24 @@ function openPluginDetail(id) {
   document.getElementById('zhanliDetailView').style.display = '';
   window.scrollTo(0, 0);
 
-  const pkg = `@openclaw/${p.name}`;
-  const installCmd = `openclaw plugins install clawhub:${pkg}`;
+  const installCmd = p.installCmd || `openclaw plugins install clawhub:${p.pkg}`;
+  const channelBadge = `<span style="font-size:11px;padding:2px 8px;border-radius:8px;font-weight:600;background:${p.channel==='Official'?'rgba(99,102,241,0.1)':'rgba(16,185,129,0.1)'};color:${p.channel==='Official'?'#6366F1':'#059669'}">${p.channel} Plugin</span>`;
 
   const leftCol = `
-    <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:8px">
-      <div style="width:52px;height:52px;border-radius:14px;background:${p.color};display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff;flex-shrink:0">${p.name[0].toUpperCase()}</div>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
+      <div style="width:56px;height:56px;border-radius:14px;background:${p.color};display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;flex-shrink:0">${p.name[0].toUpperCase()}</div>
       <div>
-        <div style="font-size:22px;font-weight:800;font-family:'Space Grotesk',sans-serif;color:var(--text)">${p.name}</div>
-        <div style="font-size:12px;color:var(--text-3);margin-top:2px">${p.desc.slice(0,30)}…</div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-size:22px;font-weight:800;font-family:'Space Grotesk',sans-serif;color:var(--text)">${p.name}</span>
+          ${channelBadge}
+        </div>
+        <div style="font-size:12px;color:var(--text-3);margin-top:3px">by ${p.author}</div>
       </div>
     </div>
-    <div><code class="plugin-pkg">${pkg}</code></div>
+    <code class="plugin-pkg">${p.pkg}</code>
     <div class="zd-article">
       <p>${p.desc}</p>
+      ${p.tags ? `<p style="margin-bottom:14px">${p.tags.map(t=>`<span style="background:var(--hover-bg);padding:2px 8px;border-radius:8px;font-size:11.5px;margin-right:4px;display:inline-block">${t}</span>`).join('')}</p>` : ''}
       <h2>功能能力</h2>
       <div class="plugin-cap-list">${(p.caps||[]).map(c=>`<div class="plugin-cap-item">${c}</div>`).join('')}</div>
       <h2>安全分析</h2>
@@ -1867,10 +1889,14 @@ function openPluginDetail(id) {
       <div class="plugin-sec-checks">
         <span>✓ 用途与能力已核验</span>
         <span>✓ 指令范围合规</span>
-        <span>✓ 安装机制（标准 npm 依赖）</span>
+        <span>✓ 安装机制（标准依赖）</span>
         <span>✓ 凭据处理（环境变量隔离）</span>
         <span>✓ 权限与持久化（非提权）</span>
       </div>
+      ${p.secNote ? `<div style="margin-top:10px;padding:10px 12px;background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.25);border-radius:8px;font-size:12.5px;color:var(--text-2);line-height:1.6">⚠️ ${p.secNote}</div>` : ''}
+      ${p.homepage||p.repo ? `<h2>链接</h2>
+      ${p.homepage?`<p><a href="${p.homepage}" target="_blank" style="color:var(--primary)">${p.homepage}</a></p>`:''}
+      ${p.repo?`<p><a href="${p.repo}" target="_blank" style="color:var(--primary)">源码仓库 →</a></p>`:''}` : ''}
     </div>`;
 
   const rightCol = `
@@ -1879,7 +1905,7 @@ function openPluginDetail(id) {
         <div class="zd-author-avatar" style="background:${p.color}">${p.name[0].toUpperCase()}</div>
         <div>
           <div class="zd-author-name">${p.author}</div>
-          <div style="font-size:12px;color:var(--text-3);margin-top:2px">官方认证 · Code Plugin</div>
+          <div style="font-size:12px;color:var(--text-3);margin-top:2px">${p.channel} · Code Plugin</div>
         </div>
       </div>
       <div class="zd-panel-label">安装命令</div>
@@ -1891,12 +1917,10 @@ function openPluginDetail(id) {
       <table class="plugin-info-table">
         <tr><td>当前版本</td><td><code>${p.version}</code></td></tr>
         <tr><td>Runtime ID</td><td><code>${p.runtime}</code></td></tr>
-        <tr><td>构建版本</td><td><code>${p.version}</code></td></tr>
-        <tr><td>最低网关版本</td><td>≥ ${p.minGateway}</td></tr>
-        <tr><td>下载次数</td><td>↓ ${p.downloads.toLocaleString()}</td></tr>
-        <tr><td>收藏数</td><td>☆ ${p.stars}</td></tr>
+        <tr><td>Plugin Package</td><td><code>${p.pkg}</code></td></tr>
+        <tr><td>最低网关版本</td><td>${p.minGateway !== 'N/A' ? '≥ '+p.minGateway : 'N/A'}</td></tr>
       </table>
-      <button class="zd-install-btn" onclick="copyPluginCmd('${installCmd}',this)">📋 复制安装命令</button>
+      <button class="zd-install-btn" onclick="copyPluginCmd('${installCmd}',this)" style="margin-top:4px">📋 复制安装命令</button>
       <button class="plugin-dl-btn">⬇ 下载 ZIP</button>
     </div>`;
 
