@@ -241,6 +241,8 @@
     .sec-badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
     .sec-badge.pending{background:rgba(234,179,8,0.12);color:#ca8a04;}
     .sec-badge.safe{background:rgba(16,185,129,0.12);color:#059669;}
+    .sec-badge.medium{background:rgba(16,185,129,0.08);color:#059669;}
+    .sec-badge.suspicious{background:rgba(239,68,68,0.12);color:#dc2626;}
     .plugin-dl-btn{width:100%;height:34px;background:var(--hover-bg);color:var(--text-2);border:1px solid var(--border);border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:8px;}
     .plugin-dl-btn:hover{background:var(--bg-3);}
     .plugin-json{background:var(--hover-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:monospace;font-size:12px;color:var(--text-2);white-space:pre;overflow-x:auto;margin-bottom:4px;line-height:1.65;}
@@ -1546,45 +1548,48 @@ const PLUGINS = [
     desc:'OpenClaw Zalo Personal Account plugin via native zca-js integration.',
     version:'2026.3.22',author:'openclaw',channel:'Official',
     compat:{builtWithOpenClawVersion:'2026.3.22',minGatewayVersion:'>=2026.3.22',pluginApiRange:'>=2026.3.22'},
-    caps:{bundledSkills:[],capabilityTags:['executes-code','channel:zalo','setup'],channels:['zalo'],commandNames:[],configSchema:true,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'zalouser',serviceNames:[],setupEntry:true,toolNames:[]},
-    secDesc:'The package implements a Zalo personal account channel plugin using zca-js; code and dependencies match that stated purpose with no signs of covert data exfiltration.',
-    staticPatterns:2,
-    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2',sourceRepo:'openclaw/openclaw',sourceTag:'refs/heads/main',summary:'Validated package structure and linked the release to source metadata.',tier:'source-linked'},
+    caps:{bundledSkills:[],capabilityTags:['executes-code','channel:zalouser','setup'],channels:['zalouser'],commandNames:[],configSchema:true,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'zalouser',serviceNames:[],setupEntry:true,toolNames:[]},
+    secStatus:'benign',secConfidence:'high',
+    secDesc:'The implementation matches stated purpose with native integration, QR login, multi-account functionality, and messaging capabilities present.',
+    staticPatterns:0,
+    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'c4420c03243bd691dc809cd4298bd744cb58d286',sourceRepo:'openclaw/openclaw',sourceTag:'refs/heads/main',summary:'Validated package structure and linked the release to source metadata.',tier:'source-linked'},
     tags:{latest:'2026.3.22'}},
   {id:2,name:'twitch',pkg:'@openclaw/twitch',color:'#9146FF',
-    desc:'Manage Twitch channel data, scores, and rankings from CLI. Use when rolling highlights, scoring streams, ranking metrics, tracking stats.',
-    version:'2.0.0',author:'BytesAgain (ckchzh)',channel:'Community',
-    homepage:'https://bytesagain.com',repo:'https://github.com/bytesagain/ai-skills',
-    installCmd:'openclaw skills install twitch',
-    compat:{builtWithOpenClawVersion:'N/A',minGatewayVersion:'N/A',pluginApiRange:'N/A'},
-    caps:{bundledSkills:[],capabilityTags:['executes-code'],channels:[],commandNames:['roll','score','rank','history','stats','challenge','create','join','track','leaderboard','reward','reset'],configSchema:false,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'twitch',serviceNames:[],setupEntry:false,toolNames:[]},
-    secDesc:'Offline-first CLI tool for Twitch channel data management. Data stored locally at ~/.local/share/twitch/. No network calls beyond user-initiated exports.',
-    staticPatterns:1,
-    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'N/A',sourceRepo:'bytesagain/ai-skills',sourceTag:'refs/heads/main',summary:'Community plugin — structure validated, not source-linked to openclaw/openclaw.',tier:'community'},
-    tags:{latest:'2.0.0'}},
+    desc:'OpenClaw Twitch channel plugin.',
+    version:'2026.3.22',author:'openclaw',channel:'Official',
+    compat:{builtWithOpenClawVersion:'2026.3.22',minGatewayVersion:'>=2026.3.22',pluginApiRange:'>=2026.3.22'},
+    caps:{bundledSkills:[],capabilityTags:['executes-code','channel:twitch'],channels:['twitch'],commandNames:[],configSchema:true,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'twitch',serviceNames:[],setupEntry:false,toolNames:[]},
+    secStatus:'benign',secConfidence:'high',
+    secDesc:'code, dependencies, and runtime instructions align with stated purpose.',
+    staticPatterns:0,
+    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'c4420c03243bd691dc809cd4298bd744cb58d286',sourceRepo:'openclaw/openclaw',sourceTag:'refs/heads/main',summary:'Validated package structure and linked the release to source metadata.',tier:'source-linked'},
+    tags:{latest:'2026.3.22'}},
   {id:3,name:'nostr',pkg:'@openclaw/nostr',color:'#F59E0B',
     desc:'OpenClaw Nostr channel plugin for NIP-04 encrypted DMs.',
     version:'2026.3.22',author:'openclaw',channel:'Official',
     compat:{builtWithOpenClawVersion:'2026.3.22',minGatewayVersion:'>=2026.3.22',pluginApiRange:'>=2026.3.22'},
     caps:{bundledSkills:[],capabilityTags:['executes-code','channel:nostr','setup'],channels:['nostr'],commandNames:[],configSchema:true,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'nostr',serviceNames:[],setupEntry:true,toolNames:[]},
-    secDesc:'Implements a Nostr channel plugin with NIP-04 encrypted DMs. Keys are handled via environment variables; no unexpected network destinations detected.',
-    staticPatterns:2,
-    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3',sourceRepo:'openclaw/openclaw',sourceTag:'refs/heads/main',summary:'Validated package structure and linked the release to source metadata.',tier:'source-linked'},
+    secStatus:'suspicious',secConfidence:'medium',
+    secDesc:'The implementation aligns with documented functionality, yet metadata lacks declared environment variables while code expects NOSTR_PRIVATE_KEY; unicode control characters detected in instructions warrant inspection.',
+    staticPatterns:null,
+    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'c4420c03243bd691dc809cd4298bd744cb58d286',sourceRepo:'openclaw/openclaw',sourceTag:'refs/heads/main',summary:'Validated package structure and linked the release to source metadata.',tier:'source-linked'},
     tags:{latest:'2026.3.22'}},
   {id:4,name:'msteams',pkg:'@openclaw/msteams',color:'#6264A7',
     desc:'OpenClaw Microsoft Teams channel plugin.',
     version:'2026.3.22',author:'openclaw',channel:'Official',
     compat:{builtWithOpenClawVersion:'2026.3.22',minGatewayVersion:'>=2026.3.22',pluginApiRange:'>=2026.3.22'},
     caps:{bundledSkills:[],capabilityTags:['executes-code','channel:msteams','setup'],channels:['msteams'],commandNames:[],configSchema:true,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'msteams',serviceNames:[],setupEntry:true,toolNames:[]},
-    secDesc:'Implements a Microsoft Teams channel plugin via Graph API. Credentials handled via environment variables; traffic is limited to Microsoft endpoints.',
-    staticPatterns:2,
-    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4',sourceRepo:'openclaw/openclaw',sourceTag:'refs/heads/main',summary:'Validated package structure and linked the release to source metadata.',tier:'source-linked'},
+    secStatus:'benign',secConfidence:'medium',
+    secDesc:'This package is a Microsoft Teams (Bot Framework / Graph) channel plugin whose code, dependencies, and network behavior are consistent with its stated purpose.',
+    staticPatterns:0,
+    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'c4420c03243bd691dc809cd4298bd744cb58d286',sourceRepo:'openclaw/openclaw',sourceTag:'refs/heads/main',summary:'Validated package structure and linked the release to source metadata.',tier:'source-linked'},
     tags:{latest:'2026.3.22'}},
   {id:5,name:'matrix',pkg:'@openclaw/matrix',color:'#1F2937',
     desc:'OpenClaw Matrix channel plugin.',
     version:'2026.3.22',author:'openclaw',channel:'Official',
     compat:{builtWithOpenClawVersion:'2026.3.22',minGatewayVersion:'>=2026.3.22',pluginApiRange:'>=2026.3.22'},
     caps:{bundledSkills:[],capabilityTags:['executes-code','channel:matrix','setup'],channels:['matrix'],commandNames:[],configSchema:true,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'matrix',serviceNames:[],setupEntry:true,toolNames:[]},
+    secStatus:'benign',secConfidence:'high',
     secDesc:'The package appears to implement a Matrix channel plugin and its code, dependencies, and runtime behavior match that purpose; there are no obvious mismatches or covert exfiltration mechanisms in the provided files.',
     staticPatterns:3,
     verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'c4420c03243bd691dc809cd4298bd744cb58d286',sourceRepo:'openclaw/openclaw',sourceTag:'refs/heads/main',summary:'Validated package structure and linked the release to source metadata.',tier:'source-linked'},
@@ -1592,21 +1597,22 @@ const PLUGINS = [
   {id:6,name:'diagnostics-otel',pkg:'@openclaw/diagnostics-otel',color:'#10B981',
     desc:'OpenClaw diagnostics OpenTelemetry exporter.',
     version:'2026.3.22',author:'openclaw',channel:'Official',
-    compat:{builtWithOpenClawVersion:'2026.3.22',minGatewayVersion:'>=2026.3.22',pluginApiRange:'>=2026.3.22'},
-    caps:{bundledSkills:[],capabilityTags:['executes-code','diagnostics:otel'],channels:[],commandNames:[],configSchema:true,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'diagnostics-otel',serviceNames:[],setupEntry:false,toolNames:[]},
-    secDesc:'OpenTelemetry exporter plugin. Transmits trace/metric/log data to configured OTLP endpoints only. No unexpected outbound connections detected.',
-    staticPatterns:1,
-    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5',sourceRepo:'openclaw/openclaw',sourceTag:'refs/heads/main',summary:'Validated package structure and linked the release to source metadata.',tier:'source-linked'},
+    compat:{builtWithOpenClawVersion:'2026.3.22',pluginApiRange:'>=2026.3.22'},
+    caps:{bundledSkills:[],capabilityTags:['executes-code'],channels:[],commandNames:[],configSchema:true,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'diagnostics-otel',serviceNames:[],setupEntry:false,toolNames:[]},
+    secStatus:'benign',secConfidence:'high',
+    secDesc:'internally consistent: it implements an OpenTelemetry exporter for OpenClaw diagnostics and only sends telemetry to the configured OTEL endpoint(s).',
+    staticPatterns:0,
+    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'c4420c03243bd691dc809cd4298bd744cb58d286',sourceRepo:'openclaw/openclaw',sourceTag:'refs/heads/main',summary:'Validated package structure and linked the release to source metadata.',tier:'source-linked'},
     tags:{latest:'2026.3.22'}},
   {id:7,name:'linkmind-context',pkg:'linkmind-context',color:'#6366F1',
-    desc:'LinkMind Context Engine Plugin for OpenClaw — registers a context engine and sends session messages to a configurable LinkMind API for compression.',
-    version:'1.0.0',author:'zhujunxian3',channel:'Community',
-    installCmd:'openclaw plugins install clawhub:linkmind-context',
-    compat:{builtWithOpenClawVersion:'2026.3.8',minGatewayVersion:'>=2026.3.8',pluginApiRange:'>=1.0.0'},
-    caps:{bundledSkills:[],capabilityTags:['executes-code','context-engine'],channels:[],commandNames:[],configSchema:true,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'linkmind-context',serviceNames:[],setupEntry:false,toolNames:[]},
-    secDesc:'Plugin transmits complete conversation content to the external LinkMind service for compression. May log API keys on error paths. Recommend using trusted endpoints and verifying remote service security before production deployment.',
-    staticPatterns:4,secWarn:true,
-    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6',sourceRepo:'zhujunxian3/linkmind-context',sourceTag:'refs/heads/main',summary:'Community plugin — package structure validated.',tier:'community'},
+    desc:'LinkMind Context Engine Plugin for OpenClaw.',
+    version:'1.0.0',author:'landingbj',channel:'Community',
+    compat:{builtWithOpenClawVersion:'2026.3.8',minGatewayVersion:'2026.3.8',pluginApiRange:'>=1.0.0',pluginSdkVersion:'2026.3.8'},
+    caps:{bundledSkills:[],capabilityTags:['executes-code'],channels:[],commandNames:[],configSchema:true,configUiHints:false,executesCode:true,hooks:[],httpRouteCount:0,materializesDependencies:false,providers:[],runtimeId:'linkmind-context',serviceNames:[],setupEntry:false,toolNames:[]},
+    secStatus:'benign',secConfidence:'high',
+    secDesc:'The skill does what it claims: it registers a context engine and sends session messages to a configurable LinkMind API for compression.',
+    staticPatterns:0,
+    verif:{hasProvenance:false,scanStatus:'not-run',scope:'artifact-only',sourceCommit:'0a5640f9dc0e77e45d9d2d3b54fcc76b6e13f995',sourceRepo:'landingbj/linkmind-context',sourceTag:'main',summary:'Validated package structure and linked the release to source metadata.',tier:'source-linked'},
     tags:{latest:'1.0.0'}},
 ];
 
@@ -1921,11 +1927,10 @@ function openPluginDetail(id) {
     </div>
     <div class="plugin-sec-row">
       <span>OpenClaw</span>
-      <span class="sec-badge safe">Benign · high confidence</span>
+      <span class="sec-badge ${p.secStatus==='suspicious'?'suspicious':(p.secConfidence==='medium'?'medium':'safe')}">${p.secStatus==='suspicious'?'Suspicious':'Benign'} · ${p.secConfidence} confidence</span>
     </div>
     <div class="plugin-sec-desc">${p.secDesc}</div>
-    <div class="plugin-static">Static analysis: ${p.staticPatterns} pattern${p.staticPatterns!==1?'s':''} detected</div>
-    ${p.secWarn ? `<div style="margin-top:10px;padding:10px 12px;background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.25);border-radius:8px;font-size:12.5px;color:var(--text-2);line-height:1.6">⚠️ ${p.secDesc}</div>` : ''}
+    ${p.staticPatterns!==null?`<div class="plugin-static">Static analysis: ${p.staticPatterns} pattern${p.staticPatterns!==1?'s':''} detected</div>`:''}
 
     <div class="plugin-section-title">Verification</div>
     <pre class="plugin-json">${fmtJson(p.verif)}</pre>
