@@ -252,6 +252,35 @@
     .plugin-ver-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;font-size:13px;}
     .plugin-ver-label{color:var(--text-3);font-size:12.5px;}
     .plugin-ver-val{font-family:monospace;font-size:12.5px;color:var(--text);}
+    /* Role 卡片网格 */
+    .role-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;}
+    .role-card{background:var(--card);border-radius:14px;box-shadow:var(--shadow-sm);overflow:hidden;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;}
+    .role-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(109,40,217,0.16);}
+    .role-card-cover{position:relative;height:160px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:16px;}
+    .role-soul-badge{position:absolute;top:10px;left:10px;background:rgba(255,255,255,0.18);backdrop-filter:blur(4px);color:#fff;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;letter-spacing:0.3px;}
+    .role-cover-highlights{position:absolute;top:50%;right:14px;transform:translateY(-50%);background:rgba(0,0,0,0.28);backdrop-filter:blur(6px);border-radius:8px;padding:8px 12px;min-width:110px;}
+    .role-cover-highlight-title{color:#fff;font-size:11px;font-weight:700;margin-bottom:4px;white-space:nowrap;}
+    .role-cover-highlight-sub{color:rgba(255,255,255,0.65);font-size:10px;line-height:1.5;}
+    .role-cover-check{color:rgba(255,255,255,0.85);font-size:10px;line-height:1.7;}
+    .role-card-body{padding:14px 16px 0;}
+    .role-card-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+    .role-card-name{font-size:15px;font-weight:700;color:var(--text);}
+    .role-card-dl{font-size:12px;color:var(--text-3);display:flex;align-items:center;gap:3px;}
+    .role-card-desc{font-size:12.5px;color:var(--text-2);line-height:1.55;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+    .role-card-users{font-size:11.5px;color:var(--primary);background:rgba(124,58,237,0.07);border-radius:6px;padding:4px 8px;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
+    .role-card-team{font-size:11.5px;color:var(--text-3);margin-bottom:8px;display:flex;align-items:center;gap:4px;}
+    .role-card-section{font-size:11px;font-weight:700;color:var(--text-3);margin-bottom:4px;display:flex;align-items:center;gap:4px;}
+    .role-card-files{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;}
+    .role-file-tag{font-size:11px;font-family:monospace;font-weight:600;color:var(--text);background:var(--hover-bg);border:1px solid var(--border);padding:1px 7px;border-radius:5px;}
+    .role-file-more{font-size:11px;color:var(--text-3);background:var(--hover-bg);border:1px solid var(--border);padding:1px 7px;border-radius:5px;}
+    .role-skills-row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;}
+    .role-skill-tag{font-size:11px;color:var(--text-2);background:var(--hover-bg);border-radius:5px;padding:2px 8px;}
+    .role-card-cats{font-size:11px;color:var(--text-3);margin-bottom:12px;display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+    .role-card-footer{display:flex;gap:8px;padding:10px 16px 14px;border-top:1px solid var(--border);margin-top:2px;}
+    .role-feed-btn{flex:1;height:34px;background:var(--hover-bg);color:var(--text-3);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;cursor:not-allowed;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px;}
+    .role-dl-btn{width:34px;height:34px;background:var(--hover-bg);color:var(--text-2);border:1px solid var(--border);border-radius:8px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .role-dl-btn:hover{background:var(--bg-3);}
+    .role-coming-soon{position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.4);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:0.5px;}
     .skill-desc{font-size:12.5px;color:var(--text-2);line-height:1.6;flex:1;margin-bottom:10px;}
     .skill-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
     .skill-tag{background:var(--tag-bg);color:var(--tag-text);padding:1px 8px;border-radius:4px;font-size:11px;font-weight:600;}
@@ -645,6 +674,7 @@
             <button class="skill-sub-tab active" id="skillSubTabSkill" onclick="switchSkillSubTab('skill')">⚡ Skill</button>
             <button class="skill-sub-tab" id="skillSubTabAbility" onclick="switchSkillSubTab('ability')">🧩 Ability <span style="font-size:11px;color:var(--text-3)">skill 合集</span></button>
             <button class="skill-sub-tab" id="skillSubTabPlugin" onclick="switchSkillSubTab('plugin')">🔌 Plugin</button>
+            <button class="skill-sub-tab" id="skillSubTabRole" onclick="switchSkillSubTab('role')">🎭 Role</button>
           </div>
           <div class="plaza-toolbar">
             <div class="plaza-search">
@@ -1616,6 +1646,64 @@ const PLUGINS = [
     tags:{latest:'1.0.0'}},
 ];
 
+/* ══ Role 数据 ══ */
+const ROLES = [
+  {id:1, name:'智能记账助手', team:'fintech-team', downloads:424, comingSoon:false,
+    desc:'自动识别账单、智能分类记账、生成收支报告，让财务管理轻松愉快',
+    targetUsers:'个人理财用户、小微企业主、财务人员',
+    coverBg:'linear-gradient(135deg,#065F46,#0F766E)',
+    coverTitle:'智能记账助手',
+    coverChecks:['✓ 收支分析','✓ 智能记账','✓ 预算规划','✓ 报表生成'],
+    soulFiles:['AGENTS.md','IDENTITY.md','MEMORY.md','SOUL.md'],
+    skills:['bill-parser','expense-tracker','budget-planner','report-gen'],
+    cats:['记账','财务','预算','报表']},
+  {id:2, name:'思维成长教练', team:'dan-koe', downloads:326, comingSoon:false,
+    desc:'帮助你突破思维局限，构建第二大脑，实现个人成长与职业跃迁',
+    targetUsers:'职场人士、创业者、想突破自我的个人成长爱好者',
+    coverBg:'linear-gradient(135deg,#4C1D95,#7C3AED)',
+    coverTitle:'思维成长教练',
+    coverChecks:['Mindset · Clarity','Deep Work · Ikigai'],
+    soulFiles:['AGENTS.md','IDENTITY.md','MEMORY.md','SOUL.md'],
+    skills:['mindset-coach','deep-work','ikigai-finder','clarity'],
+    cats:['成长','思维','教练','个人发展']},
+  {id:3, name:'安全巡逻员', team:'security-team', downloads:215, comingSoon:false,
+    desc:'24小时自动巡检系统安全漏洞，发现威胁立即告警，守护你的代码和服务',
+    targetUsers:'安全工程师、运维工程师、SRE、对系统安全有要求的开发者',
+    coverBg:'linear-gradient(135deg,#1E3A5F,#1E40AF)',
+    coverTitle:'安全巡逻员',
+    coverChecks:['✓ 漏洞扫描','✓ 安全报告','✓ 日志审计','✓ 权限管控'],
+    soulFiles:['AGENTS.md','IDENTITY.md','MEMORY.md','SOUL.md'],
+    skills:['vuln-scanner','log-monitor','alert-manager','audit'],
+    cats:['安全','监控','巡检','告警']},
+  {id:4, name:'代码保洁员', team:'dev-team', downloads:0, comingSoon:true,
+    desc:'自动检测代码异味，执行 Lint、Refactor 与 Git Cleanup，保持代码库整洁',
+    targetUsers:'个人开发者、团队 Tech Lead、注重代码质量的工程师',
+    coverBg:'linear-gradient(135deg,#1F2937,#374151)',
+    coverTitle:'代码保洁员',
+    coverChecks:['Lint · Refactor','Git Cleanup'],
+    soulFiles:['AGENTS.md','IDENTITY.md','MEMORY.md','SOUL.md'],
+    skills:['code-linter','refactor','git-cleaner','smell-detector'],
+    cats:['代码质量','重构','Git','工程']},
+  {id:5, name:'BD 增长助手', team:'growth-team', downloads:0, comingSoon:true,
+    desc:'智能挖掘商机，梳理拓展路径，协助商务跟进与客户转化，驱动业务增长',
+    targetUsers:'BD 经理、销售总监、初创团队增长负责人',
+    coverBg:'linear-gradient(135deg,#78350F,#B45309)',
+    coverTitle:'BD 增长助手',
+    coverChecks:['✓ 投融资查询','● 客户挖掘','✓ 线索追踪','● 交文导导'],
+    soulFiles:['AGENTS.md','IDENTITY.md','MEMORY.md','SOUL.md'],
+    skills:['lead-finder','crm-sync','deal-tracker','outreach'],
+    cats:['BD','增长','销售','商务']},
+  {id:6, name:'HR 助理', team:'hr-team', downloads:0, comingSoon:true,
+    desc:'自动筛选简历、安排面试、员工入职，高效处理绩效考核与薪资管理',
+    targetUsers:'HR 专员、招聘负责人、中小企业主',
+    coverBg:'linear-gradient(135deg,#831843,#BE185D)',
+    coverTitle:'HR 助理',
+    coverChecks:['● 简历筛选','✓ 员工入职','● 绩效考核','✓ 薪酬管理'],
+    soulFiles:['AGENTS.md','IDENTITY.md','MEMORY.md','SOUL.md'],
+    skills:['resume-filter','onboarding','perf-review','payroll'],
+    cats:['HR','招聘','绩效','人事']},
+];
+
 function sortSkills(s) {
   skillSort=s;
   document.getElementById('skillTabHot').classList.toggle('active',s==='hot');
@@ -1653,6 +1741,7 @@ function switchSkillSubTab(tab) {
   document.getElementById('skillSubTabSkill').classList.toggle('active', tab === 'skill');
   document.getElementById('skillSubTabAbility').classList.toggle('active', tab === 'ability');
   document.getElementById('skillSubTabPlugin').classList.toggle('active', tab === 'plugin');
+  document.getElementById('skillSubTabRole').classList.toggle('active', tab === 'role');
   renderSkills();
 }
 
@@ -1666,7 +1755,46 @@ function renderSkills() {
   const grid = document.getElementById('skillGrid');
   if (!list.length) { grid.innerHTML='<div class="no-skills">没有找到匹配的 Skill</div>'; return; }
 
-  if (zhanliViewMode === 'skill' && skillSubTab === 'plugin') {
+  if (zhanliViewMode === 'skill' && skillSubTab === 'role') {
+    const qr = (document.getElementById('skillSearch').value||'').trim().toLowerCase();
+    const roles = ROLES.filter(r => !qr || r.name.includes(qr) || r.desc.toLowerCase().includes(qr) || r.cats.some(c=>c.includes(qr)));
+    grid.className = 'role-grid';
+    grid.innerHTML = roles.length ? roles.map(r => `
+      <div class="role-card">
+        <div class="role-card-cover" style="background:${r.coverBg}">
+          <span class="role-soul-badge">Soul</span>
+          ${r.comingSoon ? `<span class="role-coming-soon">COMING SOON</span>` : ''}
+          <div class="role-cover-highlights">
+            <div class="role-cover-highlight-title">${r.coverTitle}</div>
+            ${r.coverChecks.map(c=>`<div class="role-cover-check">${c}</div>`).join('')}
+          </div>
+        </div>
+        <div class="role-card-body">
+          <div class="role-card-title-row">
+            <span class="role-card-name">${r.name}</span>
+            ${r.comingSoon ? '' : `<span class="role-card-dl">⬇ ${r.downloads}</span>`}
+          </div>
+          <div class="role-card-desc">${r.desc}</div>
+          <div class="role-card-users">👥 ${r.targetUsers}</div>
+          <div class="role-card-team">👤 ${r.team}</div>
+          <div class="role-card-section">🟠 Soul 文件</div>
+          <div class="role-card-files">
+            ${r.soulFiles.map(f=>`<span class="role-file-tag">${f}</span>`).join('')}
+            <span class="role-file-more">...</span>
+          </div>
+          <div class="role-card-section">🟢 Skill 合集 (${r.skills.length})</div>
+          <div class="role-skills-row">
+            ${r.skills.map(s=>`<span class="role-skill-tag">${s}</span>`).join('')}
+          </div>
+          <div class="role-card-cats">🏷 ${r.cats.join(' · ')}</div>
+        </div>
+        <div class="role-card-footer">
+          <div class="role-feed-btn">✨ 投喂虾 soon</div>
+          <div class="role-dl-btn">⬇</div>
+        </div>
+      </div>`).join('') : '<div class="no-skills">没有找到匹配的 Role</div>';
+    return;
+  } else if (zhanliViewMode === 'skill' && skillSubTab === 'plugin') {
     // Plugin 卡片视图（同 clawhub 风格）
     const qp = (document.getElementById('skillSearch').value||'').trim().toLowerCase();
     const plugins = PLUGINS.filter(p => !qp || p.name.includes(qp) || p.desc.toLowerCase().includes(qp));
