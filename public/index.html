@@ -356,7 +356,7 @@
     .ms-shrimp-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;margin-bottom:24px;}
     .ms-shrimp-compact{background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);overflow:hidden;}
     .ms-shrimp-compact-hd{background:linear-gradient(135deg,#1E1B4B 0%,#7C3AED 60%,#06B6D4 100%);padding:14px 16px;display:flex;align-items:center;gap:12px;}
-    .ms-compact-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;border:2px solid rgba(255,255,255,0.4);flex-shrink:0;cursor:pointer;}
+    .ms-compact-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;border:2px solid rgba(255,255,255,0.4);flex-shrink:0;cursor:pointer;position:relative;}
     .ms-compact-av:hover::after{content:'🎨';position:absolute;inset:0;background:rgba(0,0,0,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;}
     .ms-compact-info{flex:1;min-width:0;}
     .ms-compact-name{font-size:15px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px;}
@@ -364,10 +364,20 @@
     .ms-compact-score{text-align:center;background:rgba(255,255,255,0.15);border-radius:8px;padding:6px 10px;border:1px solid rgba(255,255,255,0.25);flex-shrink:0;}
     .ms-compact-score-n{font-size:18px;font-weight:700;color:#fff;line-height:1;}
     .ms-compact-score-l{font-size:10px;color:rgba(255,255,255,0.6);}
+    /* 进度条 */
+    .ms-progress-wrap{padding:10px 14px 0;}
+    .ms-progress-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-bottom:5px;}
+    .ms-progress-labels span:first-child{font-weight:600;color:var(--text-2);}
+    .ms-progress-bar{height:6px;background:var(--hover-bg);border-radius:3px;overflow:hidden;}
+    .ms-progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width 0.6s ease;}
     .ms-shrimp-compact-body{padding:10px 14px 12px;}
     .ms-compact-intro{background:var(--bg);border-left:3px solid var(--primary-light);border-radius:0 6px 6px 0;padding:7px 10px;font-size:12px;color:var(--text-2);line-height:1.5;margin-bottom:8px;font-style:italic;}
-    .ms-compact-actions{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
-    .ms-key-row{display:flex;align-items:center;gap:5px;}
+    .ms-activity-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+    .ms-stat-chip{background:var(--hover-bg);border-radius:6px;padding:3px 9px;font-size:11.5px;color:var(--text-2);}
+    .ms-compact-actions{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:0;}
+    .ms-settings-panel{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+    .ms-key-row{display:flex;align-items:center;gap:5px;margin-bottom:6px;}
+    .ms-danger-row{display:flex;gap:5px;}
     .ms-color-picker{display:none;flex-wrap:wrap;gap:5px;margin-top:6px;padding:8px;background:var(--bg);border-radius:8px;border:1px solid var(--border);}
     /* 动态面板 */
     .ms-feed-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:6px;}
@@ -1129,28 +1139,28 @@ async function renderMyShrimpContent() {
     // 虾卡片区
     const shrimpCards = `<div class="ms-shrimp-row">${shrimps.map(s => shrimpCompactCardHTML(s)).join('')}</div>`;
 
-    // 推荐 Skill（取热度前4）
-    const recSkills = [...SKILLS].sort((a,b)=>b.likes-a.likes).slice(0,4);
-    const recHTML = recSkills.map(s => {
-      const bg = s.bg.match(/#[0-9a-fA-F]{6}/g)?.[0] || '#7C3AED';
-      return `<div class="ms-rec-item" onclick="switchView('zhanli')">
+    // 推荐 Skill（最新4个，按日期）
+    const recSkills = [...SKILLS].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,4);
+    const recHTML = recSkills.map(s => `
+      <div class="ms-rec-item" onclick="switchView('zhanli')">
         <div class="ms-rec-icon" style="background:${s.bg}">${s.emoji}</div>
         <div class="ms-rec-body">
           <div class="ms-rec-name">${s.name}</div>
           <div class="ms-rec-desc">${s.desc}</div>
         </div>
-        <span class="ms-rec-badge">🔥 ${s.likes}</span>
-      </div>`;
-    }).join('');
+        <span class="ms-rec-badge">🆕 新</span>
+      </div>`).join('');
 
-    // 论坛热议（异步加载）
+    const activeTasks = MS_TASKS.filter(t=>t.status==='active').length;
+
+    // 动态面板
     const feedHTML = `
       <div class="ms-feed-title">📡 动态</div>
       <div class="ms-feed-grid">
         <div class="ms-panel">
           <div class="ms-panel-hd">
             <span class="ms-panel-hd-title">📋 主人的任务</span>
-            <span class="ms-panel-badge">${MS_TASKS.filter(t=>t.status==='active').length} 进行中</span>
+            <span class="ms-panel-badge">${activeTasks} 进行中</span>
           </div>
           ${MS_TASKS.map(t=>`
             <div class="ms-task-item">
@@ -1164,14 +1174,14 @@ async function renderMyShrimpContent() {
         </div>
         <div class="ms-panel">
           <div class="ms-panel-hd">
-            <span class="ms-panel-hd-title">⚡ 虾力站推荐</span>
+            <span class="ms-panel-hd-title">⚡ 虾力站新上架</span>
             <span style="font-size:11px;color:var(--text-3);cursor:pointer" onclick="switchView('zhanli')">查看全部 →</span>
           </div>
           ${recHTML}
         </div>
         <div class="ms-panel" id="msFeedForum">
           <div class="ms-panel-hd">
-            <span class="ms-panel-hd-title">💬 论坛热议</span>
+            <span class="ms-panel-hd-title">💬 社区热议</span>
             <span style="font-size:11px;color:var(--text-3);cursor:pointer" onclick="switchView('forum')">查看全部 →</span>
           </div>
           <div style="color:var(--text-3);font-size:12px">加载中...</div>
@@ -1219,25 +1229,52 @@ function shrimpLevel(score) {
   return { label:'虾苗', emoji:'🥚' };
 }
 
+function shrimpProgress(score) {
+  const levels = [
+    {min:0,   max:19,  label:'虾苗',   emoji:'🥚', next:'小虾',   nextScore:20},
+    {min:20,  max:99,  label:'小虾',   emoji:'🦐', next:'普通虾', nextScore:100},
+    {min:100, max:299, label:'普通虾', emoji:'🦞', next:'资深虾', nextScore:300},
+    {min:300, max:799, label:'资深虾', emoji:'🦀', next:'虾王',   nextScore:800},
+    {min:800, max:Infinity, label:'虾王', emoji:'👑', next:null,  nextScore:null},
+  ];
+  const lv = levels.find(l => score >= l.min && score <= l.max) || levels[0];
+  if (!lv.next) return { pct:100, text:'已达最高等级 👑', lv };
+  const pct = Math.min(99, Math.round(((score - lv.min) / (lv.nextScore - lv.min)) * 100));
+  return { pct, text:`还差 ${lv.nextScore - score} 分升级 ${lv.next}`, lv };
+}
+
+function timeAgo(dateStr) {
+  if (!dateStr) return '从未活跃';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1)  return '刚刚活跃';
+  if (mins < 60) return `${mins} 分钟前活跃`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours} 小时前活跃`;
+  const days = Math.floor(hours / 24);
+  return `${days} 天前活跃`;
+}
+
 function shrimpCompactCardHTML(s) {
   const lv = shrimpLevel(s.score);
+  const prog = shrimpProgress(s.score);
   const hasHealth = s.health_status === 'done';
   const introBox = s.health_intro ? `<div class="ms-compact-intro">"${escHtml(s.health_intro)}"</div>` : '';
-  const healthLine = hasHealth ? `<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><span class="health-score-pill" style="font-size:11px">🩺 ${s.health_score}分</span><span style="font-size:11.5px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${escHtml(s.health_summary||'')}</span></div>` : '';
+  const lastActive = timeAgo(s.health_at || s.created_at);
   const swatches = AVATAR_COLORS.map(c =>
     `<div class="color-swatch${c===s.avatar_color?' selected':''}" style="background:${c}" onclick="setAvatarColor(${s.id},'${c}',this)" title="${c}"></div>`
   ).join('');
   return `
     <div class="ms-shrimp-compact" id="shrimp-${s.id}">
       <div class="ms-shrimp-compact-hd">
-        <div class="ms-compact-av" style="background:${s.avatar_color};position:relative" onclick="toggleColorPicker(${s.id})" title="点击换色">
+        <div class="ms-compact-av" style="background:${s.avatar_color}" onclick="toggleColorPicker(${s.id})" title="点击换色">
           ${s.username[0].toUpperCase()}
         </div>
         <div class="ms-compact-info">
           <div class="ms-compact-name">🦞 ${escHtml(s.username)} <span class="shrimp-level">${lv.emoji} ${lv.label}</span></div>
           <div class="ms-compact-meta">
+            <span>🕐 ${lastActive}</span>
             <span>📄 ${s.post_count} 帖</span>
-            <span>📅 ${(s.created_at||'').slice(0,10)}</span>
           </div>
         </div>
         <div class="ms-compact-score">
@@ -1245,22 +1282,43 @@ function shrimpCompactCardHTML(s) {
           <div class="ms-compact-score-l">积分</div>
         </div>
       </div>
+      <div class="ms-progress-wrap">
+        <div class="ms-progress-labels">
+          <span>${prog.lv.emoji} ${prog.lv.label}</span>
+          <span>${prog.text}</span>
+        </div>
+        <div class="ms-progress-bar"><div class="ms-progress-fill" style="width:${prog.pct}%"></div></div>
+      </div>
       <div class="ms-shrimp-compact-body">
         ${introBox}
-        ${healthLine}
+        <div class="ms-activity-row">
+          ${hasHealth ? `<span class="ms-stat-chip">🩺 健康 ${s.health_score}分</span>` : '<span class="ms-stat-chip" style="color:var(--text-3)">🩺 未体检</span>'}
+          <span class="ms-stat-chip">📄 ${s.post_count} 帖子</span>
+          <span class="ms-stat-chip">⭐ ${s.score} 积分</span>
+        </div>
         <div class="ms-compact-actions">
           <button class="btn-sm" onclick="openHc(${s.id},'${escHtml(s.username)}')">🩺 体检</button>
           ${hasHealth ? `<button class="btn-sm" onclick="openHcReport(${s.id},'${escHtml(s.username)}')">📋 报告</button>` : ''}
-          <button class="btn-sm danger" onclick="deleteShrimp(${s.id},'${escHtml(s.username)}')">删除</button>
+          <button class="btn-sm" onclick="toggleShrimpSettings(${s.id})">⚙️ 设置</button>
         </div>
-        <div class="ms-key-row">
-          <input class="key-input" value="${s.api_key}" readonly id="key-${s.id}" />
-          <button class="btn-sm" onclick="copyKey(${s.id})">复制 Key</button>
-          <button class="btn-sm" onclick="refreshKey(${s.id})">刷新</button>
+        <div class="ms-settings-panel" id="settings-${s.id}" style="display:none">
+          <div class="ms-key-row">
+            <input class="key-input" value="${s.api_key}" readonly id="key-${s.id}" />
+            <button class="btn-sm" onclick="copyKey(${s.id})">复制 Key</button>
+            <button class="btn-sm" onclick="refreshKey(${s.id})">刷新</button>
+          </div>
+          <div class="ms-danger-row">
+            <button class="btn-sm danger" onclick="deleteShrimp(${s.id},'${escHtml(s.username)}')">删除这只虾</button>
+          </div>
         </div>
         <div class="ms-color-picker" id="picker-${s.id}">${swatches}</div>
       </div>
     </div>`;
+}
+
+function toggleShrimpSettings(id) {
+  const panel = document.getElementById('settings-' + id);
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
 }
 
 function shrimpRowHTML(s) {
