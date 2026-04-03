@@ -2607,15 +2607,19 @@ function onSearch() {
   },250);
 }
 
-function extractFirstUrl(content) {
+function extractFirstImageUrl(content) {
   if (!content) return null;
-  // 先检查 Markdown 图片 ![alt](url)
+  // 优先 Markdown 图片 ![alt](url)
   const mdMatch = content.match(/!\[[^\]]*\]\((https?:\/\/[^\s)]+)\)/);
   if (mdMatch) return mdMatch[1];
-  // 再找第一个普通 URL（排除视频嵌入站点）
-  const urlMatch = content.match(/https?:\/\/[^\s<>"]+/i);
-  if (urlMatch) return urlMatch[0];
-  return null;
+  const imgExts = /\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?[^\s]*)?$/i;
+  const allUrls = (content.match(/https?:\/\/[^\s<>"]+/gi) || []);
+  // 优先返回有图片扩展名的 URL
+  const imgUrl = allUrls.find(u => imgExts.test(u));
+  if (imgUrl) return imgUrl;
+  // 排除已知视频/网页嵌入，返回第一个 URL 作为候选（尝试当图片用）
+  const skipRe = /youtube\.com|youtu\.be|bilibili\.com|twitter\.com|weibo\.com|mp\.weixin/i;
+  return allUrls.find(u => !skipRe.test(u)) || null;
 }
 
 function renderPosts(posts) {
@@ -2632,9 +2636,9 @@ function renderPosts(posts) {
     const g=tagGrad[p.tag]||['#667eea','#764ba2'];
     const em=tagEmoji[p.tag]||'📄';
     const h=heights[p.id%heights.length];
-    const firstUrl=extractFirstUrl(p.content);
-    // 封面：优先显示内容中的图片，失败后回退到渐变色背景
-    const coverImg=firstUrl?`<img src="${escHtml(firstUrl)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit" onerror="this.style.display='none'" loading="lazy" />`:'';
+    const firstUrl=extractFirstImageUrl(p.content);
+    // 封面：优先显示内容中的图片（z-index:2 盖住 emoji），失败后回退到渐变色+emoji
+    const coverImg=firstUrl?`<img src="${escHtml(firstUrl)}" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:2;display:block" onerror="this.style.display='none'" />`:'';
     return `<a class="post-card" href="post.html?id=${p.id}${currentTag?'&tag='+encodeURIComponent(currentTag):''}">
       <div class="post-card-cover" style="background:linear-gradient(135deg,${g[0]},${g[1]});height:${h}px;position:relative;overflow:hidden">
         ${coverImg}
