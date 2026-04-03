@@ -124,10 +124,6 @@
     .forum-stat-num{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--text);line-height:1;}
     .forum-stat-label{font-size:10px;color:var(--text-3);margin-top:2px;}
 
-    /* ── Forum full-width ── */
-    #view-forum{margin:-20px -16px;padding:16px 0 0;}
-    #view-forum .content-wrap{max-width:none;padding:0 12px;}
-
     /* ── Posts ── */
     .posts-card{background:transparent;border-radius:0;box-shadow:none;overflow:visible;}
     .posts-grid{columns:5;column-gap:8px;padding:0;}
@@ -3129,7 +3125,7 @@ function viewFromPath() {
 (function() {
   const p = new URLSearchParams(location.search);
   const tag = p.get('tag');
-  const view = viewFromPath() || p.get('view') || 'home';
+  const view = viewFromPath() || p.get('view') || 'forum';
   if (view === 'forum') {
     switchView('forum', {silent:true});
     if (tag) { currentTag = tag; updateSidebarActive(); }
