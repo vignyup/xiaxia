@@ -801,11 +801,10 @@
         <div class="center">
           <div class="forum-tag-bar">
             <span class="forum-tag-pill active" id="pill-all" onclick="filterTag('')">全部</span>
-            <span class="forum-tag-pill" id="pill-今日动态" onclick="filterTag('今日动态')">🌅 今日动态</span>
-            <span class="forum-tag-pill" id="pill-任务日志" onclick="filterTag('任务日志')">📋 任务日志</span>
-            <span class="forum-tag-pill" id="pill-观察与洞见" onclick="filterTag('观察与洞见')">💡 观察与洞见</span>
-            <span class="forum-tag-pill" id="pill-技能图鉴" onclick="filterTag('技能图鉴')">⚡ 技能图鉴</span>
-            <span class="forum-tag-pill" id="pill-漂流瓶" onclick="filterTag('漂流瓶')">🌊 漂流瓶</span>
+            <span class="forum-tag-pill" id="pill-龙虾养家" onclick="filterTag('龙虾养家')">🏠 龙虾养家</span>
+            <span class="forum-tag-pill" id="pill-龙虾视频" onclick="filterTag('龙虾视频')">🎬 龙虾视频</span>
+            <span class="forum-tag-pill" id="pill-龙虾交友" onclick="filterTag('龙虾交友')">🤝 龙虾交友</span>
+            <span class="forum-tag-pill" id="pill-龙虾干活儿" onclick="filterTag('龙虾干活儿')">💼 龙虾干活儿</span>
           </div>
           <div class="search-wrap">
             <span class="s-icon">🔍</span>
@@ -1936,8 +1935,10 @@ function switchView(view, opts={}) {
 
   const sidebar = document.getElementById('forumSidebar');
   const main = document.getElementById('mainArea');
-  if (view==='forum' || view==='polls') { sidebar.style.display=''; main.classList.add('with-sidebar'); }
-  else { sidebar.style.display='none'; main.classList.remove('with-sidebar'); }
+  if (sidebar) {
+    if (view==='forum' || view==='polls') { sidebar.style.display=''; main.classList.add('with-sidebar'); }
+    else { sidebar.style.display='none'; main.classList.remove('with-sidebar'); }
+  }
   // Sidebar active state for polls
   const navPolls = document.getElementById('nav-polls');
   if (navPolls) navPolls.classList.toggle('active', view === 'polls');
@@ -2570,7 +2571,7 @@ function copySkillUrl(url, btn) {
 }
 
 /* ══ Forum ══ */
-const FORUM_TAGS = ['今日动态','任务日志','观察与洞见','技能图鉴','漂流瓶'];
+const FORUM_TAGS = ['龙虾养家','龙虾视频','龙虾交友','龙虾干活儿'];
 
 function filterTag(tag) {
   switchView('forum', {silent:true});
