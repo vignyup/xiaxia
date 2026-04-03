@@ -170,18 +170,36 @@ function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// ── 图片加载失败时降级为链接卡片 ──
+function imgFallbackToLink(img) {
+  const url = img.src;
+  const domain = (() => { try { return new URL(url).hostname; } catch { return url; } })();
+  const a = document.createElement('a');
+  a.className = 'content-link';
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener';
+  a.innerHTML = `<span class="content-link-icon">🔗</span><div><div style="font-size:13px;font-weight:500;margin-bottom:2px">${domain}</div><div class="content-link-url">${url}</div></div>`;
+  if (img.parentNode) img.parentNode.replaceChild(a, img);
+}
+
 // ── 内容渲染：识别图片/视频/链接 ──
 function renderContent(text) {
   if (!text) return '';
 
-  const imgExts = /\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?[^\s]*)?$/i;
+  // 处理 Markdown 图片语法 ![alt](url)
+  const mdImages = [];
+  text = text.replace(/!\[([^\]]*)\]\((https?:\/\/[^\s)]+)\)/g, (_, _alt, url) => { mdImages.push(url); return ''; });
+
   const videoExts = /\.(mp4|webm|mov|avi|mkv)(\?[^\s]*)?$/i;
+  const imgExts = /\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?[^\s]*)?$/i;
   const youtubeRe = /https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/i;
   const bilibiliRe = /https?:\/\/(?:www\.)?bilibili\.com\/video\/(BV[a-zA-Z0-9]+)/i;
   const urlRe = /https?:\/\/[^\s<>"]+/gi;
 
   const urls = [...(text.match(urlRe) || [])];
-  const images = [], videos = [], embeds = [], links = [];
+  // images: 明确图片 + 未知 URL（先尝试作为图片，失败降级为链接）
+  const images = [...mdImages], videos = [], embeds = [], unknownUrls = [];
 
   urls.forEach(url => {
     const ytMatch = url.match(youtubeRe);
@@ -190,18 +208,19 @@ function renderContent(text) {
       embeds.push({ type: 'youtube', id: ytMatch[1], url });
     } else if (biliMatch) {
       embeds.push({ type: 'bilibili', id: biliMatch[1], url });
-    } else if (imgExts.test(url)) {
-      images.push(url);
     } else if (videoExts.test(url)) {
       videos.push(url);
+    } else if (imgExts.test(url)) {
+      images.push(url);
     } else {
-      links.push(url);
+      // 未知 URL：先尝试作为图片渲染，失败则降级为链接卡片
+      unknownUrls.push(url);
     }
   });
 
   // 纯文本部分（去掉已处理的 URL）
   let plainText = text;
-  [...images, ...videos, ...links, ...embeds.map(e => e.url)].forEach(url => {
+  [...images, ...videos, ...unknownUrls, ...embeds.map(e => e.url)].forEach(url => {
     plainText = plainText.replace(url, '').trim();
   });
 
@@ -210,7 +229,7 @@ function renderContent(text) {
   // 纯文本
   if (plainText) html += `<div class="content-text">${escHtml(plainText)}</div>`;
 
-  // 图片
+  // 已知图片（有扩展名）
   if (images.length) {
     const cls = images.length === 1 ? 'single' : images.length === 2 ? 'double' : 'multi';
     html += `<div class="content-images ${cls}">`;
@@ -219,6 +238,11 @@ function renderContent(text) {
     });
     html += `</div>`;
   }
+
+  // 未知 URL：逐个尝试作为图片，失败降级为链接卡片
+  unknownUrls.forEach(url => {
+    html += `<img class="content-img single-img" src="${escHtml(url)}" loading="lazy" style="max-height:500px" onerror="imgFallbackToLink(this)" />`;
+  });
 
   // 视频
   videos.forEach(src => {
@@ -231,16 +255,6 @@ function renderContent(text) {
     if (e.type === 'youtube') iframeSrc = `https://www.youtube.com/embed/${e.id}`;
     if (e.type === 'bilibili') iframeSrc = `https://player.bilibili.com/player.html?bvid=${e.id}&autoplay=0`;
     html += `<div class="content-iframe-wrap"><iframe src="${iframeSrc}" allowfullscreen></iframe></div>`;
-  });
-
-  // 普通链接
-  links.forEach(url => {
-    const domain = (() => { try { return new URL(url).hostname; } catch { return url; } })();
-    html += `<a class="content-link" href="${escHtml(url)}" target="_blank" rel="noopener">
-      <span class="content-link-icon">🔗</span>
-      <div><div style="font-size:13px;font-weight:500;margin-bottom:2px">${escHtml(domain)}</div>
-      <div class="content-link-url">${escHtml(url)}</div></div>
-    </a>`;
   });
 
   return html || `<div class="content-text">${escHtml(text)}</div>`;

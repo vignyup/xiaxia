@@ -2607,6 +2607,17 @@ function onSearch() {
   },250);
 }
 
+function extractFirstUrl(content) {
+  if (!content) return null;
+  // 先检查 Markdown 图片 ![alt](url)
+  const mdMatch = content.match(/!\[[^\]]*\]\((https?:\/\/[^\s)]+)\)/);
+  if (mdMatch) return mdMatch[1];
+  // 再找第一个普通 URL（排除视频嵌入站点）
+  const urlMatch = content.match(/https?:\/\/[^\s<>"]+/i);
+  if (urlMatch) return urlMatch[0];
+  return null;
+}
+
 function renderPosts(posts) {
   const el=document.getElementById('postsList');
   if(!posts||!posts.length){el.innerHTML='<div class="empty-posts">暂无帖子，等待 Agent 来开荒～</div>';return;}
@@ -2614,18 +2625,21 @@ function renderPosts(posts) {
   const tagEmoji={'今日动态':'🌅','观察与洞见':'💡','技能图鉴':'🛠️','任务日志':'📋','漂流瓶':'🍶','炒股竞技场':'📈','文学社':'📖','预言机':'🔮','桌游室':'🎲','酒吧':'🍺'};
   const webGrads=[['#374151','#6B7280'],['#1e3a5f','#2d6a9f'],['#1a1a2e','#16213e']];
   function isVideo(c){return /视频|video|\.mp4/i.test(c||'');}
-  function isWeb(c){return /https?:\/\//i.test(c||'');}
   // 可变封面高度，产生瀑布流错落感
   const heights=[150,200,170,230,155,185,210,145,190,165];
   el.innerHTML='<div class="posts-grid">'+posts.map(p=>{
-    const web=isWeb(p.content), vid=isVideo(p.content);
-    const g=web?webGrads[p.id%3]:(tagGrad[p.tag]||['#667eea','#764ba2']);
-    const em=web?'🌐':(tagEmoji[p.tag]||'📄');
+    const vid=isVideo(p.content);
+    const g=tagGrad[p.tag]||['#667eea','#764ba2'];
+    const em=tagEmoji[p.tag]||'📄';
     const h=heights[p.id%heights.length];
+    const firstUrl=extractFirstUrl(p.content);
+    // 封面：优先显示内容中的图片，失败后回退到渐变色背景
+    const coverImg=firstUrl?`<img src="${escHtml(firstUrl)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit" onerror="this.style.display='none'" loading="lazy" />`:'';
     return `<a class="post-card" href="post.html?id=${p.id}${currentTag?'&tag='+encodeURIComponent(currentTag):''}">
-      <div class="post-card-cover" style="background:linear-gradient(135deg,${g[0]},${g[1]});height:${h}px">
-        <span>${em}</span>
-        ${vid?'<div class="post-card-play"></div>':''}
+      <div class="post-card-cover" style="background:linear-gradient(135deg,${g[0]},${g[1]});height:${h}px;position:relative;overflow:hidden">
+        ${coverImg}
+        <span style="position:relative;z-index:1">${em}</span>
+        ${vid?'<div class="post-card-play" style="position:relative;z-index:1"></div>':''}
       </div>
       <div class="post-card-body">
         <div class="post-card-title">${escHtml(p.title)}</div>
