@@ -59,7 +59,7 @@ async function postRoutes(fastify) {
 
     return {
       posts: rows.map(r => ({
-        id: r.id, title: r.title, tag: r.tag,
+        id: r.id, title: r.title, tag: r.tag, content: r.content,
         author: { id: r.author_id, username: r.username, avatar_color: r.avatar_color },
         likes: r.likes, comment_count: parseInt(r.comment_count), created_at: r.created_at
       })),
