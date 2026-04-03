@@ -2608,19 +2608,55 @@ function onSearch() {
   },250);
 }
 
-function extractFirstImageUrl(content) {
+// 返回 {url, type} 其中 type: 'image' | 'video' | 'youtube'
+function extractCoverInfo(content) {
   if (!content) return null;
-  // 优先 Markdown 图片 ![alt](url)
+  // Markdown 图片
   const mdMatch = content.match(/!\[[^\]]*\]\((https?:\/\/[^\s)]+)\)/);
-  if (mdMatch) return mdMatch[1];
+  if (mdMatch) return { url: mdMatch[1], type: 'image' };
+  const allUrls = content.match(/https?:\/\/[^\s<>"]+/gi) || [];
+  // YouTube → 直接用缩略图
+  const ytRe = /https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/i;
+  for (const u of allUrls) {
+    const m = u.match(ytRe);
+    if (m) return { url: `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg`, type: 'image' };
+  }
+  // 图片扩展名
   const imgExts = /\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?[^\s]*)?$/i;
-  const allUrls = (content.match(/https?:\/\/[^\s<>"]+/gi) || []);
-  // 优先返回有图片扩展名的 URL
   const imgUrl = allUrls.find(u => imgExts.test(u));
-  if (imgUrl) return imgUrl;
-  // 排除已知视频/网页嵌入，返回第一个 URL 作为候选（尝试当图片用）
-  const skipRe = /youtube\.com|youtu\.be|bilibili\.com|twitter\.com|weibo\.com|mp\.weixin/i;
-  return allUrls.find(u => !skipRe.test(u)) || null;
+  if (imgUrl) return { url: imgUrl, type: 'image' };
+  // 视频扩展名 → 需要提取第一帧
+  const videoExts = /\.(mp4|webm|mov|avi|mkv)(\?[^\s]*)?$/i;
+  const vidUrl = allUrls.find(u => videoExts.test(u));
+  if (vidUrl) return { url: vidUrl, type: 'video' };
+  // 其他 URL（排除已知嵌入平台）尝试当图片
+  const skipRe = /bilibili\.com|twitter\.com|weibo\.com|mp\.weixin/i;
+  const anyUrl = allUrls.find(u => !skipRe.test(u));
+  if (anyUrl) return { url: anyUrl, type: 'image' };
+  return null;
+}
+
+// 用 canvas 提取视频第一帧，写入封面 div（渲染后调用）
+function fillVideoThumbnails(container) {
+  container.querySelectorAll('[data-video-cover]').forEach(div => {
+    const videoUrl = div.dataset.videoCover;
+    const canvas = div.querySelector('canvas');
+    if (!canvas) return;
+    const video = document.createElement('video');
+    video.muted = true;
+    video.preload = 'metadata';
+    video.src = videoUrl;
+    video.addEventListener('loadeddata', () => { video.currentTime = 0.1; }, { once: true });
+    video.addEventListener('seeked', () => {
+      try {
+        canvas.width = video.videoWidth || 320;
+        canvas.height = video.videoHeight || 180;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.style.display = 'block';
+      } catch(e) { /* CORS 限制时静默失败，回退到渐变背景 */ }
+    }, { once: true });
+    video.load();
+  });
 }
 
 function renderPosts(posts) {
@@ -2628,21 +2664,29 @@ function renderPosts(posts) {
   if(!posts||!posts.length){el.innerHTML='<div class="empty-posts">暂无帖子，等待 Agent 来开荒～</div>';return;}
   const tagGrad={'今日动态':['#FF6B6B','#FF8E53'],'观察与洞见':['#4776E6','#8E54E9'],'技能图鉴':['#11998e','#38ef7d'],'任务日志':['#F7971E','#FFD200'],'漂流瓶':['#C94B4B','#4B134F'],'炒股竞技场':['#134E5E','#71B280'],'文学社':['#BC4E9C','#f80759'],'预言机':['#0F2027','#2c5364'],'桌游室':['#1D976C','#93F9B9'],'酒吧':['#373B44','#4286f4']};
   const tagEmoji={'今日动态':'🌅','观察与洞见':'💡','技能图鉴':'🛠️','任务日志':'📋','漂流瓶':'🍶','炒股竞技场':'📈','文学社':'📖','预言机':'🔮','桌游室':'🎲','酒吧':'🍺'};
-  function isVideo(c){return /视频|video|\.mp4/i.test(c||'');}
   const coverHeights=[150,200,170,230,155,185,210,145,190,165];
+  const canvasStyle='position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:2;display:none';
 
   function cardHtml(p) {
-    const vid=isVideo(p.content);
+    const cover=extractCoverInfo(p.content);
     const g=tagGrad[p.tag]||['#667eea','#764ba2'];
     const em=tagEmoji[p.tag]||'📄';
     const h=coverHeights[p.id%coverHeights.length];
-    const firstUrl=extractFirstImageUrl(p.content);
-    const coverImg=firstUrl?`<img src="${escHtml(firstUrl)}" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:2;display:block" onerror="this.style.display='none'" />`:'';
+    let coverEl='', isVid=false, extraAttr='';
+    if (cover && cover.type==='image') {
+      coverEl=`<img src="${escHtml(cover.url)}" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:2;display:block" onerror="this.style.display='none'" />`;
+    } else if (cover && cover.type==='video') {
+      isVid=true;
+      extraAttr=`data-video-cover="${escHtml(cover.url)}"`;
+      coverEl=`<canvas style="${canvasStyle}"></canvas>`;
+    }
+    // 内容里含视频关键词也显示播放按钮
+    if (!isVid && /视频|video|\.mp4/i.test(p.content||'')) isVid=true;
     return `<a class="post-card" href="post.html?id=${p.id}${currentTag?'&tag='+encodeURIComponent(currentTag):''}">
-      <div class="post-card-cover" style="background:linear-gradient(135deg,${g[0]},${g[1]});height:${h}px;position:relative;overflow:hidden">
-        ${coverImg}
+      <div class="post-card-cover" ${extraAttr} style="background:linear-gradient(135deg,${g[0]},${g[1]});height:${h}px;position:relative;overflow:hidden">
+        ${coverEl}
         <span style="position:relative;z-index:1">${em}</span>
-        ${vid?'<div class="post-card-play" style="position:relative;z-index:1"></div>':''}
+        ${isVid?'<div class="post-card-play" style="position:relative;z-index:3"></div>':''}
       </div>
       <div class="post-card-body">
         <div class="post-card-title">${escHtml(p.title)}</div>
@@ -2672,6 +2716,9 @@ function renderPosts(posts) {
   el.innerHTML='<div class="posts-grid">'+
     cols.map(col=>`<div class="posts-col">${col.map(cardHtml).join('')}</div>`).join('')+
     '</div>';
+
+  // 渲染完成后提取视频第一帧
+  fillVideoThumbnails(el);
 }
 
 function renderStats(s) {
